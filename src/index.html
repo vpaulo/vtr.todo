@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<meta
+			name="viewport"
+			content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
+		/>
+		<meta name="description" content="Keep track of your tasks" />
+		<meta name="keywords" content="Notes, Todo, Reminder" />
+
+		<!-- Android  -->
+		<meta name="theme-color" content="white" />
+		<meta name="mobile-web-app-capable" content="yes" />
+
+		<!-- iOS -->
+		<meta name="apple-mobile-web-app-title" content="Rminder" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+		<!-- Disable night mode for this page  -->
+		<meta name="nightmode" content="enable" />
+
+		<!-- Layout mode -->
+		<meta name="layoutmode" content="fitscreen" />
+
+		<!-- imagemode - show image even in text only mode  -->
+		<meta name="imagemode" content="force" />
+
+		<!-- Orientation  -->
+		<meta name="screen-orientation" content="portrait" />
+
+		<!-- iOS  -->
+		<link href="favicons/icon-180x180.png" rel="apple-touch-icon" />
+		<link
+			href="favicons/icon-76x76.png"
+			rel="apple-touch-icon"
+			sizes="76x76"
+		/>
+		<link
+			href="favicons/icon-120x120.png"
+			rel="apple-touch-icon"
+			sizes="120x120"
+		/>
+		<link
+			href="favicons/icon-152x152.png"
+			rel="apple-touch-icon"
+			sizes="152x152"
+		/>
+
+		<!-- Startup Image  -->
+		<link
+			href="favicons/icon-512x512.png"
+			rel="apple-touch-startup-image"
+		/>
+
+		<!-- Main Link Tags  -->
+		<link
+			href="favicons/icon-16x16.png"
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+		/>
+		<link
+			href="favicons/icon-32x32.png"
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+		/>
+		<link
+			href="favicons/icon-96x96.png"
+			rel="icon"
+			type="image/png"
+			sizes="96x96"
+		/>
+
+		<!-- Android  -->
+		<link href="favicons/icon-192x192.png" rel="icon" sizes="192x192" />
+		<link href="favicons/icon-512x512.png" rel="icon" sizes="512x512" />
+
+		<!-- Others -->
+		<link
+			href="favicons/favicon.ico"
+			rel="shortcut icon"
+			type="image/x-icon"
+		/>
+		<link href="favicons/favicon.ico" rel="icon" type="image/x-icon" />
+
+		<!-- Manifest  -->
+		<link rel="manifest" href="site.webmanifest" />
+
+		<link rel="canonical" href="https://vpaulo.github.io/rminder" />
+
+		<!-- App Styles/Scripts -->
+		<link rel="preload" as="style" href="/css/fonts.css" />
+		<link rel="preload" as="style" href="/css/styles.css" />
+		<link rel="stylesheet" href="/css/fonts.css" />
+		<link rel="stylesheet" href="/css/styles.css" />
+
+		<title>Rminder</title>
+	</head>
+
+	<body>
+		<div class="root">
+			<header>
+				<!-- app nane -->
+				<!-- search tasks -->
+				<!-- settings -->
+				<!-- user -->
+			</header>
+			<main id="app">
+				<!-- left colunm -->
+				<aside class="sidebar" aria-label="Lists menu">
+					<div class="sidebar__header">
+						<button class="menu" aria-label="Toggle sidebar"></button>
+					</div>
+					<div class="sidebar__content">
+						<nav aria-label="Lists" role="navigation">
+							<ul class="lists" role="tree">
+								<li role="treeitem" aria-label="My day">My day</li>
+								<li role="treeitem" aria-label="Important">Important</li>
+								<li role="treeitem" aria-label="Planned">Planned</li>
+								<li role="treeitem" aria-label="Tasks">Tasks</li>
+							</ul>
+						</nav>
+					</div>
+					<div class="sidebar__add-list">
+						<div class="add-list"></div>
+						<div class="add-group-list"></div>
+					</div>	
+				</aside>
+				<!-- center colunm -->
+				<div class="main" role="main">
+					<div class="task-toolbar"></div>
+					<div class="container">
+						<div class="add-tasks">
+							<button class="add-task">+</button>
+							<input type="text" name="task" id="task" aria-label="Add a task" placeholder="Add a task">
+							<button class="add-task">Add</button>
+						</div>
+						<div class="tasks">
+							<ul class="tasks__list"></ul>
+						</div>
+					</div>
+				</div>
+				<!-- right colunm -->
+				<aside class="details" aria-label="Detail for task: {{task-selected}}">
+					<div class="details__body">
+						<div class="detail__title"></div>
+						<div class="detail__step"></div>
+						<div class="detail__my-day"></div>
+						<div class="detail__note"></div>
+						<div class="detail__schedule">
+							<div class="remind"></div>
+							<div class="due-date"></div>
+							<div class="repeat"></div>
+						</div>
+						<div class="detail__category"></div>
+						<div class="detail__file"></div>
+					</div>
+					<div class="details__footer"></div>
+				</aside>
+			</main>
+		</div>
+		
+		<!-- <header></header>
+		<main>
+			<svg version="1.1" viewBox="0 0 507.2 507.2">
+				<circle style="fill: #32ba7c" cx="253.6" cy="253.6" r="253.6" />
+				<path
+					style="fill: #0aa06e"
+					d="M188.8,368l130.4,130.4c108-28.8,188-127.2,188-244.8c0-2.4,0-4.8,0-7.2L404.8,152L188.8,368z"
+				/>
+				<g>
+					<path
+						style="fill: #ffffff"
+						d="M260,310.4c11.2,11.2,11.2,30.4,0,41.6l-23.2,23.2c-11.2,11.2-30.4,11.2-41.6,0L93.6,272.8
+      		c-11.2-11.2-11.2-30.4,0-41.6l23.2-23.2c11.2-11.2,30.4-11.2,41.6,0L260,310.4z"
+					/>
+					<path
+						style="fill: #ffffff"
+						d="M348.8,133.6c11.2-11.2,30.4-11.2,41.6,0l23.2,23.2c11.2,11.2,11.2,30.4,0,41.6l-176,175.2
+      		c-11.2,11.2-30.4,11.2-41.6,0l-23.2-23.2c-11.2-11.2-11.2-30.4,0-41.6L348.8,133.6z"
+					/>
+				</g>
+			</svg>
+			<svg version="1.1" viewBox="0 0 507.2 507.2">
+				<circle style="fill: #08f" cx="253.6" cy="253.6" r="253.6" />
+				<path
+					style="fill: #005299"
+					d="M188.8,368l130.4,130.4c108-28.8,188-127.2,188-244.8c0-2.4,0-4.8,0-7.2L404.8,152L188.8,368z"
+				/>
+				<g>
+					<path
+						style="fill: #ffffff"
+						d="M260,310.4c11.2,11.2,11.2,30.4,0,41.6l-23.2,23.2c-11.2,11.2-30.4,11.2-41.6,0L93.6,272.8
+        		c-11.2-11.2-11.2-30.4,0-41.6l23.2-23.2c11.2-11.2,30.4-11.2,41.6,0L260,310.4z"
+					/>
+					<path
+						style="fill: #ffffff"
+						d="M348.8,133.6c11.2-11.2,30.4-11.2,41.6,0l23.2,23.2c11.2,11.2,11.2,30.4,0,41.6l-176,175.2
+        		c-11.2,11.2-30.4,11.2-41.6,0l-23.2-23.2c-11.2-11.2-11.2-30.4,0-41.6L348.8,133.6z"
+					/>
+				</g>
+			</svg>
+			<svg version="1.1" viewBox="0 0 507.2 507.2">
+				<circle style="fill: #08f" cx="253.6" cy="253.6" r="253.6" />
+				<path
+					style="fill: #006dcc"
+					d="M188.8,368l130.4,130.4c108-28.8,188-127.2,188-244.8c0-2.4,0-4.8,0-7.2L404.8,152L188.8,368z"
+				/>
+				<g>
+					<path
+						style="fill: #ffffff"
+						d="M260,310.4c11.2,11.2,11.2,30.4,0,41.6l-23.2,23.2c-11.2,11.2-30.4,11.2-41.6,0L93.6,272.8
+          		c-11.2-11.2-11.2-30.4,0-41.6l23.2-23.2c11.2-11.2,30.4-11.2,41.6,0L260,310.4z"
+					/>
+					<path
+						style="fill: #ffffff"
+						d="M348.8,133.6c11.2-11.2,30.4-11.2,41.6,0l23.2,23.2c11.2,11.2,11.2,30.4,0,41.6l-176,175.2
+          		c-11.2,11.2-30.4,11.2-41.6,0l-23.2-23.2c-11.2-11.2-11.2-30.4,0-41.6L348.8,133.6z"
+					/>
+				</g>
+			</svg>
+		</main>
+		<svg viewBox="0 0 512 512" version="1.1">
+			<path
+				d="M 377.473 295.737 c 6.334 17.74 -6.817 36.4 -25.654 36.4 H 219.677 a 35.253 35.253 0 0 0 -0.186 3.563 c 0 19.364 15.698 35.063 35.063 35.063 c 11.404 0 21.532 -5.448 27.936 -13.879 l 13.691 13.691 c -10.562 12.593 -26.723 20.33 -44.657 19.355 c -27.258 -1.48 -49.415 -23.424 -51.169 -50.667 a 55.084 55.084 0 0 1 0.069 -8.04 c 0.82 -9.983 9.322 -17.587 19.338 -17.587 h 131.727 c 5.685 0 9.67 -5.61 7.796 -10.979 L 314.48 174.32 l 17.466 -6.098 l 45.527 127.516 z M 247.625 140.4 c -19.466 0.466 -36.67 12.945 -43.114 31.403 l -54.045 154.805 L 133 320.51 l 52.95 -151.668 c 9.698 -27.78 35.749 -46.489 65.13 -46.842 c 0.39 -0.004 0.78 0.01 1.169 0.041 l 36.387 4.443 l -6.395 16.902 l -32.362 -2.899 a 19.966 19.966 0 0 0 -2.254 -0.087 z"
+				fill="purple"
+			></path>
+		</svg> -->
+		<script src="app.js"></script>
+	</body>
+</html>
