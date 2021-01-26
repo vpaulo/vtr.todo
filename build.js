@@ -1,8 +1,10 @@
 import { readFileSync, writeFileSync } from 'fs';
 import mkdirp from 'mkdirp';
+import pkg from 'glob';
+import sass from 'sass';
 import { dirname } from 'path';
 import { minify } from 'terser';
-import pkg from 'glob';
+import htmlMinifier from 'html-minifier';
 
 const { sync: globSync } = pkg;
 
@@ -27,8 +29,35 @@ files.map(async file => {
 	}
 	else {
 		const path = file.replace('src/', 'dist/');
-		mkdirp.sync(dirname(path));
-		writeFileSync(path, terserResult.code, 'utf8');
-		console.log(`Minifying ${path} success.`);
+		writeFile(path, terserResult.code);
 	}
 });
+
+function writeFile(path, content) {
+	mkdirp.sync(dirname(path));
+	writeFileSync(path, content, 'utf8');
+	console.log(`Minifying ${path} success.`);
+}
+
+// Create main styles file
+(() => {
+	const distPath = './dist/css/styles.css';
+	const result = sass.renderSync({
+		file: './src/scss/styles.scss',
+		outputStyle: 'compressed'
+	});
+
+	if (result) {
+		writeFile(distPath, result.css.toString());
+	}
+})();
+
+// Create and minify html main page
+(() => {
+	const distPath = './dist/index.html';
+	const html = readFileSync('./src/index.html', 'utf8');
+	const result = htmlMinifier.minify(html, { collapseWhitespace: true, removeComments: true });
+	if (result) {
+		writeFile(distPath, result);
+	}
+})();
