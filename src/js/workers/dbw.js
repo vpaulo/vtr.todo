@@ -9,10 +9,15 @@ function openDb() {
 	req.onsuccess = () => {
 		db = req.result;
 		console.log('openDb DONE');
+		useDB(db);
 		postMessage({ type: 'opened', message: 'DB opened' });
 	};
 	req.onerror = (evt) => {
 		console.error('openDb:', evt.target.error);
+	};
+
+	req.onblocked = (evt) => {
+		console.error('openDb: Please close all other tabs with the App open', evt.target.error);
 	};
 
 	req.onupgradeneeded = (evt) => {
@@ -22,6 +27,15 @@ function openDb() {
 		// store.createIndex('id', 'id', { unique: true });
 		store.createIndex('title', 'title', { unique: false });
 		// store.createIndex('year', 'year', { unique: false });
+
+		useDB(evt.currentTarget.result);
+	};
+}
+
+function useDB(db) {
+	db.onversionchange = (evt) => {
+		db.close();
+		console.log('openDb: A new version of this page is ready. Please reload or close this tab!', evt);
 	};
 }
 
