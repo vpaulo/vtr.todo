@@ -106,6 +106,57 @@ function updateTaskById(id, newTitle) {
 	};
 }
 
+function showDetails(id) {
+	console.log('showDetails: ', id);
+	const store = getObjectStore(DB_STORE_NAME, 'readonly');
+	store.openCursor().onsuccess = (evt) => {
+		const cursor = evt.target.result;
+		if (cursor) {
+			if (cursor.value.id === id) {
+				postMessage({ type: 'details', key: cursor.key, value: cursor.value });
+			}
+
+			// Move on to the next object in store
+			cursor.continue();
+		} else {
+			console.log('No more entries');
+		}
+	};
+}
+
+function renameTask(id, newTitle) {
+	// console.log('renameTask: ', id, newTitle);
+	const store = getObjectStore(DB_STORE_NAME, 'readwrite');
+	store.openCursor().onsuccess = (evt) => {
+		const cursor = evt.target.result;
+		if (cursor) {
+			if (cursor.value.id === id && cursor.value.title !== newTitle) {
+				const updateData = cursor.value;
+
+				updateData.title = newTitle;
+
+				const request = cursor.update(updateData);
+				request.onsuccess = () => {
+					postMessage({ type: 'success', message: 'Task rename successful' });
+				};
+			}
+
+			// Move on to the next object in store
+			cursor.continue();
+		} else {
+			console.log('No more entries');
+			displayTasks(store);
+		}
+	};
+}
+
+function getAll() {
+	const store = getObjectStore(DB_STORE_NAME, 'readonly');
+	store.getAll().onsuccess = (e) => {
+		postMessage({ type: 'allTasks', value: e.target.result });
+	};
+}
+
 function displayTasks(store) {
 
 	if (typeof store == 'undefined') {
@@ -154,6 +205,15 @@ onmessage = (e) => {
 			break;
 		case 'updateTask':
 			updateTaskById(e.data.id, e.data.title);
+			break;
+		case 'renameTask':
+			renameTask(e.data.id, e.data.title);
+			break;
+		case 'showDetails':
+			showDetails(e.data.id);
+			break;
+		case 'getAll':
+			getAll();
 			break;
 		// case 'clear':
 		// 		clearObjectStore();

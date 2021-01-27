@@ -1,3 +1,43 @@
+:root {
+  --sidebar-width: 290px;
+  --main-width: 100%;
+  --details-width: 300px;
+}
+
 *, *:before, *::after {
   box-sizing: border-box;
 }
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app__logo {
+  width: 40px;
+}
+
+#app {
+  display: flex;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+}
+
+.main {
+  width: var(--main-width);
+}
+
+.details {
+  width: var(--details-width);
+}
+
+// .details--closed {
+//   --details-width: 0;
+
+//   > * {
+//     display: none;
+//   }
+// }

@@ -104,7 +104,35 @@
 	<body>
 		<div class="root">
 			<header>
+				<!-- logo -->
+				<span class="app__logo">
+					<svg version="1.1" viewBox="0 0 507.2 507.2">
+						<circle
+							style="fill: #08f"
+							cx="253.6"
+							cy="253.6"
+							r="253.6"
+						/>
+						<path
+							style="fill: #005299"
+							d="M188.8,368l130.4,130.4c108-28.8,188-127.2,188-244.8c0-2.4,0-4.8,0-7.2L404.8,152L188.8,368z"
+						/>
+						<g>
+							<path
+								style="fill: #ffffff"
+								d="M260,310.4c11.2,11.2,11.2,30.4,0,41.6l-23.2,23.2c-11.2,11.2-30.4,11.2-41.6,0L93.6,272.8
+                c-11.2-11.2-11.2-30.4,0-41.6l23.2-23.2c11.2-11.2,30.4-11.2,41.6,0L260,310.4z"
+							/>
+							<path
+								style="fill: #ffffff"
+								d="M348.8,133.6c11.2-11.2,30.4-11.2,41.6,0l23.2,23.2c11.2,11.2,11.2,30.4,0,41.6l-176,175.2
+                c-11.2,11.2-30.4,11.2-41.6,0l-23.2-23.2c-11.2-11.2-11.2-30.4,0-41.6L348.8,133.6z"
+							/>
+						</g>
+					</svg>
+				</span>
 				<!-- app nane -->
+				<span class="app__name">RMINDER</span>
 				<!-- search tasks -->
 				<!-- settings -->
 				<!-- user -->
@@ -113,30 +141,55 @@
 				<!-- left colunm -->
 				<aside class="sidebar" aria-label="Lists menu">
 					<div class="sidebar__header">
-						<button class="menu" aria-label="Toggle sidebar"></button>
+						<button
+							class="menu"
+							aria-label="Toggle sidebar"
+						></button>
 					</div>
 					<div class="sidebar__content">
 						<nav aria-label="Lists" role="navigation">
 							<ul class="lists" role="tree">
-								<li role="treeitem" aria-label="My day">My day</li>
-								<li role="treeitem" aria-label="Important">Important</li>
-								<li role="treeitem" aria-label="Planned">Planned</li>
-								<li role="treeitem" aria-label="Tasks">Tasks</li>
+								<li role="treeitem" aria-label="My day">
+									<span>My day</span>
+									<span class="count"></span>
+								</li>
+								<li role="treeitem" aria-label="Important">
+									<span>Important</span>
+									<span class="count"></span>
+								</li>
+								<li role="treeitem" aria-label="Planned">
+									<span>Planned</span>
+									<span class="count"></span>
+								</li>
+								<li role="treeitem" aria-label="Tasks">
+									<span>Tasks</span>
+									<span class="count"></span>
+								</li>
 							</ul>
 						</nav>
 					</div>
 					<div class="sidebar__add-list">
 						<div class="add-list"></div>
 						<div class="add-group-list"></div>
-					</div>	
+					</div>
 				</aside>
 				<!-- center colunm -->
-				<div class="main" role="main">
-					<div class="task-toolbar"></div>
+				<div class="main" role="main" data-list="">
+					<div class="list-toolbar">
+						<span class="list-title"></span>
+						<!-- list options -->
+						<!-- list sorting -->
+					</div>
 					<div class="container">
 						<div class="add-tasks">
 							<button class="add-task">+</button>
-							<input type="text" name="task" id="task" aria-label="Add a task" placeholder="Add a task">
+							<input
+								type="text"
+								name="task"
+								id="task"
+								aria-label="Add a task"
+								placeholder="Add a task"
+							/>
 							<button class="add-task">Add</button>
 						</div>
 						<div class="tasks">
@@ -145,12 +198,24 @@
 					</div>
 				</div>
 				<!-- right colunm -->
-				<aside class="details" aria-label="Detail for task: {{task-selected}}">
+				<aside
+					class="details details--closed"
+					aria-label="Detail for task: {{task-selected}}"
+					data-id=""
+				>
 					<div class="details__body">
-						<div class="detail__title"></div>
+						<div class="detail__title">
+							<input class="title" type="text" value="">
+							<button class="rename">rename</button>
+							<button class="favorite">*</button>
+						</div>
 						<div class="detail__step"></div>
-						<div class="detail__my-day"></div>
-						<div class="detail__note"></div>
+						<div class="detail__my-day">
+							<button class="add-to-day">add to my day</button>
+						</div>
+						<div class="detail__note">
+							<textarea class="note" cols="30" rows="5"></textarea>
+						</div>
 						<div class="detail__schedule">
 							<div class="remind"></div>
 							<div class="due-date"></div>
@@ -159,11 +224,14 @@
 						<div class="detail__category"></div>
 						<div class="detail__file"></div>
 					</div>
-					<div class="details__footer"></div>
+					<div class="details__footer">
+						<button class="close">close</button>
+						<button class="remove">remove</button>
+					</div>
 				</aside>
 			</main>
 		</div>
-		
+
 		<!-- <header></header>
 		<main>
 			<svg version="1.1" viewBox="0 0 507.2 507.2">
