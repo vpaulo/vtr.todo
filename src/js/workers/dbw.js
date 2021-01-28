@@ -22,7 +22,8 @@ function openDb() {
 
 	req.onupgradeneeded = (evt) => {
 		console.log('openDb.onupgradeneeded');
-		const store = evt.currentTarget.result.createObjectStore(DB_STORE_NAME, { keyPath: 'id', autoIncrement: true });
+		db = evt.currentTarget.result;
+		const store = db.createObjectStore(DB_STORE_NAME, { keyPath: 'id', autoIncrement: true });
 
 		// store.createIndex('id', 'id', { unique: true });
 		store.createIndex('title', 'title', { unique: false });
