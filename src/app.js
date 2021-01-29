@@ -16,6 +16,7 @@ window.addEventListener('load', () => {
 	const close = document.querySelector('.close');
 	const myDay = document.querySelector('.my-day');
 	const importantBtn = document.querySelector('.important');
+	const note = document.querySelector('.note');
 	const countElems = document.querySelectorAll('.count');
 
 	function init() {
@@ -142,6 +143,16 @@ window.addEventListener('load', () => {
 		myDay.addEventListener('click', () => {
 			const id = +detailsContainer.dataset.id; // convert id to number
 			db.postMessage({ type: 'myDayTask', id });
+		}, false);
+
+		note.addEventListener('blur', () => {
+			const id = +detailsContainer.dataset.id; // convert id to number
+			const text = note.value.trim();
+			if (text) {
+				db.postMessage({ type: 'noteTask', id, note: text });
+			} else {
+				console.log('Required field(s) missing');
+			}
 		}, false);
 	}
 

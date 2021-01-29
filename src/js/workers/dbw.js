@@ -222,6 +222,32 @@ function myDayTask(id) {
 	};
 }
 
+function noteTask(id, note) {
+	// console.log('noteTask: ', id, note);
+	const store = getObjectStore(DB_STORE_NAME, 'readwrite');
+	store.openCursor().onsuccess = (evt) => {
+		const cursor = evt.target.result;
+		if (cursor) {
+			if (cursor.value.id === id && cursor.value.note !== note) {
+				const updateData = cursor.value;
+
+				updateData.note = note;
+
+				const request = cursor.update(updateData);
+				request.onsuccess = () => {
+					postMessage({ type: 'success', message: 'Add note to Task successful' });
+				};
+			}
+
+			// Move on to the next object in store
+			cursor.continue();
+		} else {
+			console.log('No more entries');
+			displayTasks(store);
+		}
+	};
+}
+
 function getAll() {
 	const store = getObjectStore(DB_STORE_NAME, 'readonly');
 	store.getAll().onsuccess = (e) => {
@@ -289,6 +315,9 @@ onmessage = (e) => {
 			break;
 		case 'myDayTask':
 			myDayTask(e.data.id);
+			break;
+		case 'noteTask':
+			noteTask(e.data.id, e.data.note);
 			break;
 		case 'getAll':
 			getAll();
