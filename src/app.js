@@ -14,6 +14,9 @@ window.addEventListener('load', () => {
 	const rename = document.querySelector('.rename');
 	const remove = document.querySelector('.remove');
 	const close = document.querySelector('.close');
+	const myDay = document.querySelector('.my-day');
+	const importantBtn = document.querySelector('.important');
+	const countElems = document.querySelectorAll('.count');
 
 	function init() {
 		db.postMessage({ type: 'launch' });
@@ -49,6 +52,7 @@ window.addEventListener('load', () => {
 				break;
 			case 'allTasks':
 				console.log('allTasks: ', event.data);
+				update(event.data.value);
 				break;
 			default:
 				console.log(`Error running db worker - type: ${event.data.type} does not exist`);
@@ -90,8 +94,9 @@ window.addEventListener('load', () => {
 		taskInput.addEventListener('keyup', event => {
 			if (event.code === 'Enter') {
 				const title = taskInput.value.trim();
+				const creationDate = Date.now();
 				if (title) {
-					db.postMessage({ type: 'addTask', title });
+					db.postMessage({ type: 'addTask', title, creationDate });
 				} else {
 					console.log('Required field(s) missing');
 				}
@@ -128,12 +133,39 @@ window.addEventListener('load', () => {
 		close.addEventListener('click', () => {
 			detailsContainer.classList.add('details--closed');
 		}, false);
+
+		importantBtn.addEventListener('click', () => {
+			const id = +detailsContainer.dataset.id; // convert id to number
+			db.postMessage({ type: 'importantTask', id });
+		}, false);
+
+		myDay.addEventListener('click', () => {
+			const id = +detailsContainer.dataset.id; // convert id to number
+			db.postMessage({ type: 'myDayTask', id });
+		}, false);
 	}
 
 	function showDetails(data) {
 		detailsContainer.setAttribute('aria-label', `Detail for task: ${data.title}`);
 		detailsContainer.dataset.id = data.id;
 		titleInput.value = data.title;
+	}
+
+	function update(data) {
+		const myDayTotal = data.filter(d => d.my_day).length;
+		const importantTotal = data.filter(d => d.important).length;
+		const tasksListTotal = data.length; // TODO: change total for tasks list after adding lists functionality
+		Array.from(countElems).forEach(elem => {
+			if (elem.classList.contains('count-my-day')) {
+				elem.innerText = myDayTotal;
+			}
+			if (elem.classList.contains('count-important')) {
+				elem.innerText = importantTotal;
+			}
+			if (elem.classList.contains('count-tasks')) {
+				elem.innerText = tasksListTotal;
+			}
+		});
 	}
 
 	init();
