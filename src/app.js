@@ -1,6 +1,8 @@
-window.addEventListener('load', () => {
-	console.log('window loaded');
-});
+// TODO: verify if using window onload is safer solution?
+// window.addEventListener('load', () => {
+// 	console.log('window loaded');
+// });
+// TODO: cleanup code
 (() => {
 	console.log('loaded');
 
