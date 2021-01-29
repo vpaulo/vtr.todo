@@ -9,7 +9,7 @@ function openDb() {
 	req.onsuccess = () => {
 		db = req.result;
 		console.log('openDb DONE');
-		useDB(db);
+		useDB();
 		postMessage({ type: 'opened', message: 'DB opened' });
 	};
 	req.onerror = (evt) => {
@@ -22,18 +22,18 @@ function openDb() {
 
 	req.onupgradeneeded = (evt) => {
 		console.log('openDb.onupgradeneeded');
-		db = evt.currentTarget.result;
+		db = req.result;
 		const store = db.createObjectStore(DB_STORE_NAME, { keyPath: 'id', autoIncrement: true });
 
 		// store.createIndex('id', 'id', { unique: true });
 		store.createIndex('title', 'title', { unique: false });
 		// store.createIndex('year', 'year', { unique: false });
 
-		useDB(evt.currentTarget.result);
+		useDB();
 	};
 }
 
-function useDB(db) {
+function useDB() {
 	db.onversionchange = (evt) => {
 		db.close();
 		console.log('openDb: A new version of this page is ready. Please reload or close this tab!', evt);
