@@ -160,6 +160,7 @@ window.addEventListener('load', () => {
 		detailsContainer.setAttribute('aria-label', `Detail for task: ${data.title}`);
 		detailsContainer.dataset.id = data.id;
 		titleInput.value = data.title;
+		note.value = data.note || '';
 	}
 
 	function update(data) {
