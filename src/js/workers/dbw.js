@@ -2,7 +2,7 @@ const DB_NAME = 'rminder';
 const DB_VERSION = 1; // Use a long long for this value (don't use a float)
 const DB_STORE_NAME = 'tasks';
 let db;
-
+// TODO: cleanup code
 function openDb() {
 	console.log('openDb ...');
 	const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -85,7 +85,7 @@ function removeTaskById(id) {
 			if (cursor.value.id === id) {
 				const request = cursor.delete();
 				request.onsuccess = () => {
-					postMessage({ type: 'success', message: 'delete successful' });
+					postMessage({ type: 'success', message: `Task(${id}): deleted` });
 				};
 			}
 
@@ -105,7 +105,7 @@ function updateTaskById(id, newTitle) {
 	store.openCursor().onsuccess = (evt) => {
 		const cursor = evt.target.result;
 		if (cursor) {
-			console.log('>>>', cursor.value);
+			// console.log('>>>', cursor.value);
 			if (cursor.value.id === id && cursor.value.title !== newTitle) {
 				const updateData = cursor.value;
 
@@ -113,7 +113,7 @@ function updateTaskById(id, newTitle) {
 
 				const request = cursor.update(updateData);
 				request.onsuccess = () => {
-					postMessage({ type: 'success', message: 'update successful' });
+					postMessage({ type: 'success', message: `Task(${id}): updated` });
 				};
 			}
 
@@ -157,7 +157,7 @@ function renameTask(id, newTitle) {
 
 				const request = cursor.update(updateData);
 				request.onsuccess = () => {
-					postMessage({ type: 'success', message: 'Task rename successful' });
+					postMessage({ type: 'success', message: `Task(${id}): renamed` });
 				};
 			}
 
@@ -183,7 +183,7 @@ function importantTask(id) {
 
 				const request = cursor.update(updateData);
 				request.onsuccess = () => {
-					postMessage({ type: 'success', message: `Task important (${updateData.important}) successful` });
+					postMessage({ type: 'success', message: `Task(${id}): important = ${updateData.important}` });
 				};
 			}
 
@@ -209,7 +209,7 @@ function myDayTask(id) {
 
 				const request = cursor.update(updateData);
 				request.onsuccess = () => {
-					postMessage({ type: 'success', message: `Task to my day (${updateData.my_day}) successful` });
+					postMessage({ type: 'success', message: `Task(${id}): My day = ${updateData.my_day}` });
 				};
 			}
 
@@ -235,7 +235,7 @@ function noteTask(id, note) {
 
 				const request = cursor.update(updateData);
 				request.onsuccess = () => {
-					postMessage({ type: 'success', message: 'Add note to Task successful' });
+					postMessage({ type: 'success', message: `Task(${id}): note` });
 				};
 			}
 
@@ -261,7 +261,7 @@ function displayTasks(store) {
 		store = getObjectStore(DB_STORE_NAME, 'readonly');
 	}
 
-	postMessage({ type: 'clear' });
+	postMessage({ type: 'clear', message: 'Clear' });
 
 	const reqCursor = store.openCursor();
 	reqCursor.onsuccess = (evt) => {
