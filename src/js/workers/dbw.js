@@ -30,6 +30,7 @@ function openDb() {
 		store.createIndex('title', 'title', { unique: false });
 		store.createIndex('important', 'important', { unique: false });
 		store.createIndex('my_day', 'my_day', { unique: false });
+		store.createIndex('completed', 'completed', { unique: false });
 		store.createIndex('note', 'note', { unique: false });
 		store.createIndex('creation_date', 'creation_date', { unique: false });
 
@@ -208,6 +209,9 @@ onmessage = (e) => {
 			break;
 		case 'noteTask':
 			updateTask(e.data.id, 'note', e.data.note);
+			break;
+		case 'completedTask':
+			updateTask(e.data.id, 'completed');
 			break;
 		case 'getAll':
 			getAll();

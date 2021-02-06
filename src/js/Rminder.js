@@ -40,7 +40,7 @@ export class Rminder {
 
 	tasks(data) {
 		logger(`Task: ${data.value.id} - ${data.value.title}`);
-		this.taskList.innerHTML += `<li data-id="${data.value.id}"><button class="show-details">${data.value.title}</button>`;
+		this.taskList.innerHTML += `<li data-id="${data.value.id}"><span class="completed-ckeck">O</span><button class="show-details">${data.value.title}</button><span class="importance-check">*</span>`;
 	}
 
 	details(data) {
@@ -75,7 +75,18 @@ export class Rminder {
 		});
 
 		this.taskList.addEventListener('click', e => {
-			this.showDetails(e.target, db);
+			if (e.target.classList.contains('show-details')) {
+				this.showDetails(e.target, db);
+			}
+
+			if (e.target.classList.contains('importance-check')) {
+				this.handleEvent('importantTask', db, +e.target.parentNode.dataset.id);
+			}
+
+			if (e.target.classList.contains('completed-ckeck')) {
+				this.handleEvent('completedTask', db, +e.target.parentNode.dataset.id);
+			}
+
 		}, false);
 
 		this.taskInput.addEventListener('keyup', event => {
@@ -95,17 +106,17 @@ export class Rminder {
 		}, false);
 
 		this.remove.addEventListener('click', () => {
-			this.removeTask(db);
+			this.handleEvent('removeTask', db);
 		}, false);
 
 		this.close.addEventListener('click', this.hideDetails, false);
 
 		this.importantBtn.addEventListener('click', () => {
-			this.setImportance('importantTask', db);
+			this.handleEvent('importantTask', db);
 		}, false);
 
 		this.myDay.addEventListener('click', () => {
-			this.setImportance('myDayTask', db);
+			this.handleEvent('myDayTask', db);
 		}, false);
 
 		this.note.addEventListener('blur', () => {
@@ -133,11 +144,6 @@ export class Rminder {
 		}
 	}
 
-	removeTask(db) {
-		const id = +this.detailsContainer.dataset.id;
-		db.postMessage({ type: 'removeTask', id });
-	}
-
 	showDetails(elem, db) {
 		if (elem.classList.contains('show-details')) {
 			const parent = elem.parentNode;
@@ -151,8 +157,7 @@ export class Rminder {
 		this.detailsContainer.classList.add('details--closed');
 	}
 
-	setImportance(type, db) {
-		const id = +this.detailsContainer.dataset.id;
+	handleEvent(type, db, id = +this.detailsContainer.dataset.id) {
 		db.postMessage({ type, id });
 	}
 
