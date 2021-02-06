@@ -1,9 +1,9 @@
 import { logger } from './logger.js';
-// TODO: cleanup code
+
 export class Rminder {
 	constructor() {
 		this.taskInput = document.getElementById('task');
-		this.addTask = document.querySelector('.add-task'); // TODO: change to querySelectorAll
+		this.addTaskBtn = document.querySelectorAll('.add-task');
 		this.taskList = document.querySelector('.tasks__list');
 		this.detailsContainer = document.querySelector('.details');
 		this.titleInput = document.querySelector('.title');
@@ -21,7 +21,8 @@ export class Rminder {
 	}
 
 	success(data) {
-		logger('Success: ', data);
+		const msg = typeof data.message !== 'undefined' ? `Success: ${data.message}` : 'Success: ';
+		logger(msg, data);
 	}
 
 	opened(data, db) {
@@ -69,97 +70,99 @@ export class Rminder {
 	}
 
 	addEventListeners(db) {
-		this.addTask.addEventListener('click', () => {
-			const title = this.taskInput.value.trim();
-			if (title) {
-				db.postMessage({ type: 'addTask', title });
-			} else {
-				console.log('Required field(s) missing');
-			}
+		Array.from(this.addTaskBtn).forEach(btn => {
+			btn.addEventListener('click', () => { this.addTask(db); }, false);
+		});
 
-		}, false);
-
-		this.taskList.addEventListener('click', (e) => {
-			// if (e.target.classList.contains('remove-task')) {
-			// 	const elem = e.target.parentNode;
-			// 	const id = +elem.dataset.id; // convert id to number
-			// 	db.postMessage({ type: 'removeTask', id });
-			// }
-			// if (e.target.classList.contains('update-task')) {
-			// 	const elem = e.target.parentNode;
-			// 	const title = elem.querySelector('input').value;
-			// 	const id = +elem.dataset.id; // convert id to number
-			// 	db.postMessage({ type: 'updateTask', id, title });
-			// }
-			if (e.target.classList.contains('show-details')) {
-				const elem = e.target.parentNode;
-				const id = +elem.dataset.id; // convert id to number
-				db.postMessage({ type: 'showDetails', id });
-				this.detailsContainer.classList.remove('details--closed');
-			}
+		this.taskList.addEventListener('click', e => {
+			this.showDetails(e.target, db);
 		}, false);
 
 		this.taskInput.addEventListener('keyup', event => {
 			if (event.code === 'Enter') {
-				const title = this.taskInput.value.trim();
-				const creationDate = Date.now();
-				if (title) {
-					db.postMessage({ type: 'addTask', title, creationDate });
-				} else {
-					console.log('Required field(s) missing');
-				}
+				this.addTask(db);
 			}
 		}, false);
 
 		this.titleInput.addEventListener('keyup', event => {
 			if (event.code === 'Enter') {
-				const title = this.titleInput.value.trim();
-				const id = +this.detailsContainer.dataset.id;
-				if (title) {
-					db.postMessage({ type: 'renameTask', id, title });
-				} else {
-					console.log('Required field(s) missing');
-				}
+				this.renameTask(db);
 			}
 		}, false);
 
 		this.rename.addEventListener('click', () => {
-			const title = this.titleInput.value.trim();
-			const id = +this.detailsContainer.dataset.id; // convert id to number
-			if (title) {
-				db.postMessage({ type: 'renameTask', id, title });
-			} else {
-				console.log('Required field(s) missing');
-			}
+			this.renameTask(db);
 		}, false);
 
 		this.remove.addEventListener('click', () => {
-			const id = +this.detailsContainer.dataset.id; // convert id to number
-			db.postMessage({ type: 'removeTask', id });
+			this.removeTask(db);
 		}, false);
 
-		this.close.addEventListener('click', () => {
-			this.detailsContainer.classList.add('details--closed');
-		}, false);
+		this.close.addEventListener('click', this.hideDetails, false);
 
 		this.importantBtn.addEventListener('click', () => {
-			const id = +this.detailsContainer.dataset.id; // convert id to number
-			db.postMessage({ type: 'importantTask', id });
+			this.setImportance('importantTask', db);
 		}, false);
 
 		this.myDay.addEventListener('click', () => {
-			const id = +this.detailsContainer.dataset.id; // convert id to number
-			db.postMessage({ type: 'myDayTask', id });
+			this.setImportance('myDayTask', db);
 		}, false);
 
 		this.note.addEventListener('blur', () => {
-			const id = +this.detailsContainer.dataset.id; // convert id to number
-			const text = this.note.value.trim();
-			if (text) {
-				db.postMessage({ type: 'noteTask', id, note: text });
-			} else {
-				console.log('Required field(s) missing');
-			}
+			this.setTaskNote(db);
 		}, false);
+	}
+
+	addTask(db) {
+		const title = this.taskInput.value.trim();
+		const creationDate = Date.now();
+		if (title) {
+			db.postMessage({ type: 'addTask', title, creationDate });
+		} else {
+			logger('Required field(s) missing: title');
+		}
+	}
+
+	renameTask(db) {
+		const title = this.titleInput.value.trim();
+		const id = +this.detailsContainer.dataset.id; // convert id to number
+		if (title) {
+			db.postMessage({ type: 'renameTask', id, title });
+		} else {
+			logger('Required field(s) missing: title');
+		}
+	}
+
+	removeTask(db) {
+		const id = +this.detailsContainer.dataset.id;
+		db.postMessage({ type: 'removeTask', id });
+	}
+
+	showDetails(elem, db) {
+		if (elem.classList.contains('show-details')) {
+			const parent = elem.parentNode;
+			const id = +parent.dataset.id;
+			db.postMessage({ type: 'showDetails', id });
+			this.detailsContainer.classList.remove('details--closed');
+		}
+	}
+
+	hideDetails() {
+		this.detailsContainer.classList.add('details--closed');
+	}
+
+	setImportance(type, db) {
+		const id = +this.detailsContainer.dataset.id;
+		db.postMessage({ type, id });
+	}
+
+	setTaskNote(db) {
+		const id = +this.detailsContainer.dataset.id;
+		const text = this.note.value.trim();
+		if (text) {
+			db.postMessage({ type: 'noteTask', id, note: text });
+		} else {
+			logger('Required field(s) missing: note');
+		}
 	}
 }
