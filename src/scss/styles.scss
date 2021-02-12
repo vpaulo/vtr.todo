@@ -1,5 +1,5 @@
 :root {
-	--sidebar-width: 290px;
+	--sidebar-width: 40px;
 	--main-width: 100%;
 	--details-width: 300px;
 }
@@ -36,28 +36,33 @@ header {
 }
 
 #app {
-	display: grid;
-	grid-template-columns: var(--sidebar-width) 1fr var(--details-width);
+	display: flex;
 	gap: 20px;
 }
 
 .sidebar {
-	// 	width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  width: var(--sidebar-width);
 	background-color: #fff;
+	overflow: hidden;
+
+	&.expanded {
+    --sidebar-width: 290px;
+	}
 }
 
-// .main {
-// 	width: var(--main-width);
-// }
+.main {
+	width: var(--main-width);
+}
 
-// .details {
-// 	width: var(--details-width);
-// }
+.details {
+	min-width: var(--details-width);
+}
 
 .details--closed {
-  --details-width: 0;
+	--details-width: 0;
 
-  > * {
-    display: none;
-  }
+	> * {
+		display: none;
+	}
 }

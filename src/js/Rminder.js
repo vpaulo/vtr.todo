@@ -16,6 +16,8 @@ export class Rminder {
 		this.countMyDay = document.querySelector('.count-my-day');
 		this.countImportant = document.querySelector('.count-important');
 		this.countTasks = document.querySelector('.count-tasks');
+		this.menuBtn = document.querySelector('.menu');
+		this.sidebar = document.querySelector('.sidebar');
 	}
 
 	launch(data) {
@@ -97,6 +99,7 @@ export class Rminder {
 		}, false);
 
 		this.close.addEventListener('click', this.hideDetails.bind(this), false);
+		this.menuBtn.addEventListener('click', this.toggleSidebar.bind(this), false);
 
 		this.importantBtn.addEventListener('click', () => {
 			this.handleEvent('importantTask', db);
@@ -144,6 +147,10 @@ export class Rminder {
 
 	hideDetails() {
 		this.detailsContainer.classList.add('details--closed');
+	}
+
+	toggleSidebar() {
+		this.sidebar.classList.toggle('expanded');
 	}
 
 	handleEvent(type, db, id = +this.detailsContainer.dataset.id) {
