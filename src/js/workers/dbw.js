@@ -12,6 +12,7 @@ function openDb() {
 		console.log('openDb DONE');
 		useDB();
 		postMessage({ type: 'opened', message: 'DB opened' });
+		displayTasks();
 	};
 	req.onerror = (evt) => {
 		console.error('openDb:', evt.target.error);
@@ -26,7 +27,6 @@ function openDb() {
 		rminder.db = req.result;
 		const store = rminder.db.createObjectStore(rminder.storeNames[0], { keyPath: 'id', autoIncrement: true });
 
-		// store.createIndex('id', 'id', { unique: true });
 		store.createIndex('title', 'title', { unique: false });
 		store.createIndex('important', 'important', { unique: false });
 		store.createIndex('my_day', 'my_day', { unique: false });
@@ -67,19 +67,15 @@ function addTask(title, creation_date) {
 		throw e;
 	}
 	req.onsuccess = () => {
-		console.log('Insertion in DB successful');
-		postMessage({ type: 'success' });
+		postMessage({ type: 'success', message: 'addTask: successful' });
 		displayTasks(store);
-		getAll();
 	};
 	req.onerror = () => {
-		console.error('addTask error', req.error);
-		postMessage({ type: 'failure', message: req.error });
+		postMessage({ type: 'failure', message: `addTask: error -> ${req.error}` });
 	};
 }
 
 function removeTaskById(id) {
-	// console.log('removeTaskById: ', id);
 	const store = getObjectStore(rminder.storeNames[0], 'readwrite');
 	store.openCursor().onsuccess = (evt) => {
 		const cursor = evt.target.result;
@@ -90,19 +86,15 @@ function removeTaskById(id) {
 					postMessage({ type: 'success', message: `Task(${id}): deleted` });
 				};
 			}
-
 			// Move on to the next object in store
 			cursor.continue();
 		} else {
-			console.log('No more entries');
 			displayTasks(store);
-			getAll();
 		}
 	};
 }
 
 function showDetails(id) {
-	console.log('showDetails: ', id);
 	const store = getObjectStore(rminder.storeNames[0], 'readonly');
 	store.openCursor().onsuccess = (evt) => {
 		const cursor = evt.target.result;
@@ -110,17 +102,13 @@ function showDetails(id) {
 			if (cursor.value.id === id) {
 				postMessage({ type: 'details', key: cursor.key, value: cursor.value });
 			}
-
 			// Move on to the next object in store
 			cursor.continue();
-		} else {
-			console.log('No more entries');
 		}
 	};
 }
 
 function updateTask(id, field, fieldValue) {
-	console.log('updateTask: ', id, field, fieldValue);
 	const store = getObjectStore(rminder.storeNames[0], 'readwrite');
 	store.openCursor().onsuccess = (evt) => {
 		const cursor = evt.target.result;
@@ -136,20 +124,11 @@ function updateTask(id, field, fieldValue) {
 					postMessage({ type: 'success', message: `Task(${id}): ${field} = ${updateData[field]}` });
 				};
 			}
-
 			// Move on to the next object in store
 			cursor.continue();
 		} else {
-			console.log('No more entries');
-			getAll();
+			displayTasks(store);
 		}
-	};
-}
-
-function getAll() {
-	const store = getObjectStore(rminder.storeNames[0], 'readonly');
-	store.getAll().onsuccess = (e) => {
-		postMessage({ type: 'allTasks', value: e.target.result });
 	};
 }
 
@@ -161,24 +140,8 @@ function displayTasks(store) {
 
 	postMessage({ type: 'clear', message: 'Clear' });
 
-	const reqCursor = store.openCursor();
-	reqCursor.onsuccess = (evt) => {
-		const cursor = evt.target.result;
-
-		// If the cursor is pointing at something, ask for the data
-		if (cursor) {
-			// console.log("displayTasks cursor:", cursor);
-			const req = store.get(cursor.key);
-			req.onsuccess = (e) => {
-				// console.log('tasks: ', cursor.key, e.target.result);
-				postMessage({ type: 'tasks', key: cursor.key, value: e.target.result });
-			};
-
-			// Move on to the next object in store
-			cursor.continue();
-		} else {
-			console.log('No more entries');
-		}
+	store.getAll().onsuccess = (e) => {
+		postMessage({ type: 'tasks', value: e.target.result  });
 	};
 }
 
@@ -212,9 +175,6 @@ onmessage = (e) => {
 			break;
 		case 'completedTask':
 			updateTask(e.data.id, 'completed');
-			break;
-		case 'getAll':
-			getAll();
 			break;
 		// case 'clear':
 		// 		clearObjectStore();

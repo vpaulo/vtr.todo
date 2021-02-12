@@ -13,7 +13,9 @@ export class Rminder {
 		this.myDay = document.querySelector('.my-day');
 		this.importantBtn = document.querySelector('.important');
 		this.note = document.querySelector('.note');
-		this.countElems = document.querySelectorAll('.count');
+		this.countMyDay = document.querySelector('.count-my-day');
+		this.countImportant = document.querySelector('.count-important');
+		this.countTasks = document.querySelector('.count-tasks');
 	}
 
 	launch(data) {
@@ -28,8 +30,6 @@ export class Rminder {
 	opened(data, db) {
 		logger(data.message);
 		this.addEventListeners(db);
-		db.postMessage({ type: 'display' });
-		db.postMessage({ type: 'getAll' });
 	}
 
 	clear(data) {
@@ -38,9 +38,14 @@ export class Rminder {
 		this.taskList.innerHTML = '';
 	}
 
-	tasks(data) {
-		logger(`Task: ${data.value.id} - ${data.value.title}`);
-		this.taskList.innerHTML += `<li data-id="${data.value.id}"><span class="completed-ckeck">O</span><button class="show-details">${data.value.title}</button><span class="importance-check">*</span>`;
+	tasks({ value: data }) {
+		logger('Tasks:', data);
+		// Show tasks
+		this.taskList.innerHTML = data.map(dt => `<li ${dt.completed ? 'class="completed" ' : ''} data-id="${dt.id}"><span class="completed-ckeck">O</span><button class="show-details">${dt.title}</button><span class="importance-check">*</span>`).join('');
+		// Show counters
+		this.countMyDay.innerText = data.filter(d => d.my_day).length;
+		this.countImportant.innerText = data.filter(d => d.important).length;
+		this.countTasks.innerText = data.length; // TODO: change total for tasks list after adding lists functionality
 	}
 
 	details(data) {
@@ -49,24 +54,6 @@ export class Rminder {
 		this.detailsContainer.dataset.id = data.value.id;
 		this.titleInput.value = data.value.title;
 		this.note.value = data.value.note || '';
-	}
-
-	allTasks(data) {
-		logger('allTasks: ', data);
-		const myDayTotal = data.value.filter(d => d.my_day).length;
-		const importantTotal = data.value.filter(d => d.important).length;
-		const tasksListTotal = data.value.length; // TODO: change total for tasks list after adding lists functionality
-		Array.from(this.countElems).forEach(elem => {
-			if (elem.classList.contains('count-my-day')) {
-				elem.innerText = myDayTotal;
-			}
-			if (elem.classList.contains('count-important')) {
-				elem.innerText = importantTotal;
-			}
-			if (elem.classList.contains('count-tasks')) {
-				elem.innerText = tasksListTotal;
-			}
-		});
 	}
 
 	addEventListeners(db) {
@@ -109,7 +96,7 @@ export class Rminder {
 			this.handleEvent('removeTask', db);
 		}, false);
 
-		this.close.addEventListener('click', this.hideDetails, false);
+		this.close.addEventListener('click', this.hideDetails.bind(this), false);
 
 		this.importantBtn.addEventListener('click', () => {
 			this.handleEvent('importantTask', db);
@@ -148,7 +135,9 @@ export class Rminder {
 		if (elem.classList.contains('show-details')) {
 			const parent = elem.parentNode;
 			const id = +parent.dataset.id;
-			db.postMessage({ type: 'showDetails', id });
+			if (id !== +this.detailsContainer.dataset.id) {
+				db.postMessage({ type: 'showDetails', id });
+			}
 			this.detailsContainer.classList.remove('details--closed');
 		}
 	}
