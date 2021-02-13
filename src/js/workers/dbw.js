@@ -84,6 +84,7 @@ function removeTaskById(id) {
 				const request = cursor.delete();
 				request.onsuccess = () => {
 					postMessage({ type: 'success', message: `Task(${id}): deleted` });
+					postMessage({ type: 'hideDetails' });
 				};
 			}
 			// Move on to the next object in store

@@ -1,7 +1,12 @@
+@import 'fonts';
+
 :root {
 	--sidebar-width: 40px;
 	--main-width: 100%;
 	--details-width: 300px;
+
+  height: 100%;
+  overflow: hidden;
 }
 
 *,
@@ -10,8 +15,30 @@
 	box-sizing: border-box;
 }
 
-html {
-	height: 100%;
+body,
+input,
+button {
+	font-family: 'Open Sans', Arial, sans-serif;
+}
+
+// input, textarea{
+//   color: #414141;
+// }
+
+// textarea:focus, input:focus {
+//   color: #414141;
+// }
+
+// ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+//   color: #414141;
+//   opacity: 1; /* Firefox */
+// }
+
+input {
+	border: none;
+	background: none;
+	box-shadow: none;
+	border-radius: 0;
 }
 
 body {
@@ -41,13 +68,13 @@ header {
 }
 
 .sidebar {
-  min-width: var(--sidebar-width);
-  width: var(--sidebar-width);
+	min-width: var(--sidebar-width);
+	width: var(--sidebar-width);
 	background-color: #fff;
 	overflow: hidden;
 
 	&.expanded {
-    --sidebar-width: 290px;
+		--sidebar-width: 290px;
 	}
 }
 
@@ -65,4 +92,132 @@ header {
 	> * {
 		display: none;
 	}
+}
+
+.lists,
+.tasks__list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.tasks__list > li {
+	display: flex;
+	align-items: center;
+	margin: 10px 0;
+	padding: 0 12px;
+	background-color: #fff;
+
+	&:hover {
+		background-color: #ededed;
+	}
+}
+
+.add-tasks {
+	display: flex;
+	align-items: center;
+	padding: 0 12px;
+}
+
+#task {
+	font-size: 1.4rem;
+	color: #08f;
+	padding: 16px 12px;
+	width: 100%;
+
+	&::placeholder {
+		color: #08f;
+	}
+
+	&:focus {
+		outline: none;
+		color: #414141;
+
+		&::placeholder {
+			color: #414141;
+		}
+	}
+}
+
+.show-details {
+	background: none;
+	width: 100%;
+	height: 100%;
+	border: none;
+	box-shadow: none;
+	text-align: left;
+	font-size: 1.2rem;
+	color: #414141;
+	padding: 8px 12px;
+	cursor: pointer;
+
+	.completed & {
+		text-decoration: line-through from-font #08f;
+	}
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.icon-check,
+.icon-star-solid {
+	visibility: hidden;
+}
+
+.completed-ckeck,
+.importance-check {
+	width: 20px;
+	height: 20px;
+	color: #414141;
+	cursor: pointer;
+
+	&:hover {
+		color: #08f;
+	}
+}
+
+.completed-ckeck {
+	.completed & {
+		color: #08f;
+	}
+	.completed &,
+	&:hover {
+		.icon-check {
+			visibility: visible;
+		}
+	}
+}
+
+.importance-check {
+	.important & {
+		color: #08f;
+	}
+	.important &,
+	&:hover {
+		.icon-star-solid {
+			visibility: visible;
+		}
+	}
+}
+
+.detail__title {
+	display: flex;
+	align-items: center;
+}
+
+.title {
+	width: 100%;
+	.completed & {
+		text-decoration: line-through from-font #08f;
+	}
+}
+
+.container {
+	height: 100vh;
+}
+
+.tasks {
+	overflow-y: auto;
+	height: calc(100vh - 103px); // 103 has to be the calculation of the header height with the add task height 
 }

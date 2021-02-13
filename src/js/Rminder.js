@@ -11,13 +11,15 @@ export class Rminder {
 		this.remove = document.querySelector('.remove');
 		this.close = document.querySelector('.close');
 		this.myDay = document.querySelector('.my-day');
-		this.importantBtn = document.querySelector('.important');
+		this.importanceCheckBtn = this.detailsContainer.querySelector('.importance-check');
 		this.note = document.querySelector('.note');
 		this.countMyDay = document.querySelector('.count-my-day');
 		this.countImportant = document.querySelector('.count-important');
 		this.countTasks = document.querySelector('.count-tasks');
 		this.menuBtn = document.querySelector('.menu');
 		this.sidebar = document.querySelector('.sidebar');
+		this.checkSquareTmp = document.getElementById('check-square');
+		this.starTmp = document.getElementById('star');
 	}
 
 	launch(data) {
@@ -43,19 +45,23 @@ export class Rminder {
 	tasks({ value: data }) {
 		logger('Tasks:', data);
 		// Show tasks
-		this.taskList.innerHTML = data.map(dt => `<li ${dt.completed ? 'class="completed" ' : ''} data-id="${dt.id}"><span class="completed-ckeck">O</span><button class="show-details">${dt.title}</button><span class="importance-check">*</span>`).join('');
+		this.taskList.innerHTML = data.map(dt => `<li class="${dt.completed ? 'completed ' : ''}${dt.important ? 'important ' : ''}" data-id="${dt.id}"><span class="completed-ckeck">${this.checkSquareTmp.innerHTML}</span><button class="show-details">${dt.title}</button><span class="importance-check">${this.starTmp.innerHTML}</span>`).join('');
 		// Show counters
 		this.countMyDay.innerText = data.filter(d => d.my_day).length;
 		this.countImportant.innerText = data.filter(d => d.important).length;
 		this.countTasks.innerText = data.length; // TODO: change total for tasks list after adding lists functionality
+
+		this.setDetailClasses(data);
 	}
 
-	details(data) {
+	details({ value: data }) {
 		logger('Details: ', data);
-		this.detailsContainer.setAttribute('aria-label', `Detail for task: ${data.value.title}`);
-		this.detailsContainer.dataset.id = data.value.id;
-		this.titleInput.value = data.value.title;
-		this.note.value = data.value.note || '';
+		this.detailsContainer.setAttribute('aria-label', `Detail for task: ${data.title}`);
+		this.detailsContainer.dataset.id = data.id;
+		this.titleInput.value = data.title;
+		this.note.value = data.note || '';
+
+		this.setDetailClasses(data);
 	}
 
 	addEventListeners(db) {
@@ -68,12 +74,14 @@ export class Rminder {
 				this.showDetails(e.target, db);
 			}
 
-			if (e.target.classList.contains('importance-check')) {
-				this.handleEvent('importantTask', db, +e.target.parentNode.dataset.id);
+			if (e.target.classList.contains('importance-check') || e.target.closest('.importance-check')) {
+				const parent = e.target.closest('[data-id]');
+				this.handleEvent('importantTask', db, +parent.dataset.id);
 			}
 
-			if (e.target.classList.contains('completed-ckeck')) {
-				this.handleEvent('completedTask', db, +e.target.parentNode.dataset.id);
+			if (e.target.classList.contains('completed-ckeck') || e.target.closest('.completed-ckeck')) {
+				const parent = e.target.closest('[data-id]');
+				this.handleEvent('completedTask', db, +parent.dataset.id);
 			}
 
 		}, false);
@@ -101,8 +109,9 @@ export class Rminder {
 		this.close.addEventListener('click', this.hideDetails.bind(this), false);
 		this.menuBtn.addEventListener('click', this.toggleSidebar.bind(this), false);
 
-		this.importantBtn.addEventListener('click', () => {
-			this.handleEvent('importantTask', db);
+		this.importanceCheckBtn.addEventListener('click', (e) => {
+			const parent = e.target.closest('[data-id]');
+			this.handleEvent('importantTask', db, +parent.dataset.id);
 		}, false);
 
 		this.myDay.addEventListener('click', () => {
@@ -164,6 +173,25 @@ export class Rminder {
 			db.postMessage({ type: 'noteTask', id, note: text });
 		} else {
 			logger('Required field(s) missing: note');
+		}
+	}
+
+	setDetailClasses(data) {
+		const id = +this.detailsContainer.dataset.id;
+		let dt = data;
+		
+		if (Array.isArray(data)) {
+			dt = data.find(d => d.id === id);
+		}
+		
+		this.detailsContainer.classList.remove('important', 'completed');
+
+		if (dt?.important) {
+			this.detailsContainer.classList.add('important');
+		}
+
+		if (dt?.completed) {
+			this.detailsContainer.classList.add('completed');
 		}
 	}
 }
