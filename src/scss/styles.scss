@@ -17,7 +17,8 @@
 
 body,
 input,
-button {
+button,
+textarea {
 	font-family: 'Open Sans', Arial, sans-serif;
 }
 
@@ -204,12 +205,37 @@ header {
 .detail__title {
 	display: flex;
 	align-items: center;
+	gap: 10px;
+}
+
+.title, .note {
+	width: 100%;
+	color: #414141;
+	font-size: 0.9rem;
+	padding: 8px 6px;
+
+	&:focus {
+		outline: none;
+	}
 }
 
 .title {
-	width: 100%;
+
 	.completed & {
 		text-decoration: line-through from-font #08f;
+	}
+
+	&:focus {
+		background-color: #ededed;
+	}
+}
+
+.note {
+	resize: none;
+	border: 1px solid #ededed;
+
+	&::placeholder {
+		font-size: 0.7rem;
 	}
 }
 
