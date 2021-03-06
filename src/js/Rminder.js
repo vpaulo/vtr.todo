@@ -20,6 +20,10 @@ export class Rminder {
 		this.sidebar = document.querySelector('.sidebar');
 		this.checkSquareTmp = document.getElementById('check-square');
 		this.starTmp = document.getElementById('star');
+		this.lists = document.querySelector('.lists');
+		this.listTitle = document.querySelector('.list-title');
+		this.mainContainer = document.querySelector('.main');
+		this.creationDate = document.querySelector('.creation-date');
 	}
 
 	launch(data) {
@@ -42,24 +46,39 @@ export class Rminder {
 		this.taskList.innerHTML = '';
 	}
 
-	tasks({ value: data }) {
+	tasks({ value: data, list }) {
 		logger('Tasks:', data);
+		let dt = data;
+		let title = 'Tasks';
+		let name = 'tasks';
+
+		if (list?.title) {	
+			dt = list.value;
+			title = list.title;
+			name = list.name;
+		}
+
 		// Show tasks
-		this.taskList.innerHTML = data.map(dt => `<li class="${dt.completed ? 'completed ' : ''}${dt.important ? 'important ' : ''}" data-id="${dt.id}"><span class="completed-ckeck" title="Set it as complete">${this.checkSquareTmp.innerHTML}</span><button class="show-details">${dt.title}</button><span class="importance-check" title="Set it as important">${this.starTmp.innerHTML}</span>`).join('');
+		this.taskList.innerHTML = dt.map(task => `<li class="${task.completed ? 'completed ' : ''}${task.important ? 'important ' : ''}" data-id="${task.id}"><span class="completed-ckeck" title="Set it as complete">${this.checkSquareTmp.innerHTML}</span><button class="show-details">${task.title}</button><span class="importance-check" title="Set it as important">${this.starTmp.innerHTML}</span>`).join('');
 		// Show counters
 		this.countMyDay.innerText = data.filter(d => d.my_day).length;
 		this.countImportant.innerText = data.filter(d => d.important).length;
 		this.countTasks.innerText = data.length; // TODO: change total for tasks list after adding lists functionality
+		// Set List title
+		this.listTitle.innerText = title;
+		this.mainContainer.dataset.list = name;
 
 		this.setDetailClasses(data);
 	}
 
 	details({ value: data }) {
 		logger('Details: ', data);
+		const date = new Date(data.creation_date);
 		this.detailsContainer.setAttribute('aria-label', `Detail for task: ${data.title}`);
 		this.detailsContainer.dataset.id = data.id;
 		this.titleInput.value = data.title;
 		this.note.value = data.note || '';
+		this.creationDate.innerText = new Intl.DateTimeFormat().format(date);
 
 		this.setDetailClasses(data);
 	}
@@ -82,6 +101,13 @@ export class Rminder {
 				this.handleEvent('completedTask', db, +parent.dataset.id);
 			}
 
+		}, false);
+
+		this.lists.addEventListener('click', e => {
+			const list = e.target.dataset.name || e.target.closest('li').dataset.name;
+			if (list) {
+				this.showList(list, db);
+			}
 		}, false);
 
 		this.taskInput.addEventListener('keyup', event => {
@@ -124,8 +150,9 @@ export class Rminder {
 	addTask(db) {
 		const title = this.taskInput.value.trim();
 		const creationDate = Date.now();
+		const list = this.mainContainer.dataset.list;
 		if (title) {
-			db.postMessage({ type: 'addTask', title, creationDate });
+			db.postMessage({ type: 'addTask', title, creationDate, list });
 		} else {
 			logger('Required field(s) missing: title');
 		}
@@ -172,6 +199,10 @@ export class Rminder {
 		} else {
 			logger('Required field(s) missing: note');
 		}
+	}
+
+	showList(list, db) {
+		db.postMessage({ type: 'list', list });
 	}
 
 	setDetailClasses(data) {

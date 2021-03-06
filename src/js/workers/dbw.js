@@ -4,6 +4,11 @@ const rminder = {
 	storeNames: ['tasks'],
 };
 
+const titles = {
+	my_day: 'My day',
+	important: 'Important',
+};
+
 function openDb() {
 	console.log('openDb ...');
 	const req = indexedDB.open(rminder.name, rminder.version);
@@ -53,11 +58,17 @@ function getObjectStore(store_name, mode) {
 	return rminder.db.transaction(store_name, mode).objectStore(store_name);
 }
 
-function addTask(title, creation_date) {
+function addTask(title, creation_date, list) {
 	const obj = { title, creation_date };
 	const store = getObjectStore(rminder.storeNames[0], 'readwrite');
 	let req;
 	try {
+		if (list === 'my_day') {
+			obj.my_day = true;
+		}
+		if (list === 'important') {
+			obj.important = true;
+		}
 		req = store.add(obj);
 	} catch (e) {
 		if (e.name == 'DataCloneError') {
@@ -68,7 +79,7 @@ function addTask(title, creation_date) {
 	}
 	req.onsuccess = () => {
 		postMessage({ type: 'success', message: 'addTask: successful' });
-		displayTasks(store);
+		displayTasks(store, list);
 	};
 	req.onerror = () => {
 		postMessage({ type: 'failure', message: `addTask: error -> ${req.error}` });
@@ -133,7 +144,7 @@ function updateTask(id, field, fieldValue) {
 	};
 }
 
-function displayTasks(store) {
+function displayTasks(store, list) {
 
 	if (typeof store == 'undefined') {
 		store = getObjectStore(rminder.storeNames[0], 'readonly');
@@ -142,7 +153,13 @@ function displayTasks(store) {
 	postMessage({ type: 'clear', message: 'Clear' });
 
 	store.getAll().onsuccess = (e) => {
-		postMessage({ type: 'tasks', value: e.target.result  });
+		let filteredList = e.target.result;
+		if (list !== 'tasks') {
+			filteredList = filteredList.filter(task => task[list]);
+			postMessage({ type: 'tasks', value: e.target.result, list: { title: titles[list], name: list, value: filteredList } });
+		} else {
+			postMessage({ type: 'tasks', value: e.target.result });
+		}
 	};
 }
 
@@ -154,7 +171,7 @@ onmessage = (e) => {
 		// 		getBlob(e.data.key);
 		// 		break;
 		case 'addTask':
-			addTask(e.data.title, e.data.creationDate);
+			addTask(e.data.title, e.data.creationDate, e.data.list);
 			break;
 		case 'removeTask':
 			removeTaskById(e.data.id);
@@ -181,7 +198,8 @@ onmessage = (e) => {
 		// 		clearObjectStore();
 		// 		break;
 		case 'display':
-			displayTasks();
+		case 'list':
+			displayTasks(undefined, e.data.list);
 			break;
 		default:
 			postMessage({ type });

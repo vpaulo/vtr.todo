@@ -98,6 +98,7 @@ header {
 	flex-direction: column;
 	justify-content: space-between;
 	min-width: var(--details-width);
+	height: calc(100% - 82px);
 }
 
 .details--closed {
@@ -308,8 +309,8 @@ header {
 .tasks {
 	overflow-y: auto;
 	height: calc(
-		100vh - 103px
-	); // 103 has to be the calculation of the header height with the add task height
+		100vh - 150px
+	); // 150 has to be the calculation of the header height with the add task height
 }
 
 .lists > li {
@@ -342,10 +343,14 @@ header {
 }
 
 .details__body {
-	& > div {
+	> div {
 		background-color: white;
 		margin: 10px 0;
 		padding: 10px 12px;
+	}
+
+	> div:first-child {
+		margin-top: 0;
 	}
 }
 
@@ -404,4 +409,17 @@ header {
 	width: 20px;
 	height: 20px;
 	cursor: pointer;
+}
+
+.list-toolbar {
+	background-color: #fff;
+	padding: 10px 12px;
+}
+
+.list-title {
+	letter-spacing: 2px;
+}
+
+.creation-date {
+	font-size: 0.8rem;
 }
