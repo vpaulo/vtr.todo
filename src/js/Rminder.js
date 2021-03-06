@@ -3,7 +3,7 @@ import { logger } from './logger.js';
 export class Rminder {
 	constructor() {
 		this.taskInput = document.getElementById('task');
-		this.addTaskBtn = document.querySelectorAll('.add-task');
+		this.addTaskBtn = document.querySelector('.add-task');
 		this.taskList = document.querySelector('.tasks__list');
 		this.detailsContainer = document.querySelector('.details');
 		this.titleInput = document.querySelector('.title');
@@ -45,7 +45,7 @@ export class Rminder {
 	tasks({ value: data }) {
 		logger('Tasks:', data);
 		// Show tasks
-		this.taskList.innerHTML = data.map(dt => `<li class="${dt.completed ? 'completed ' : ''}${dt.important ? 'important ' : ''}" data-id="${dt.id}"><span class="completed-ckeck">${this.checkSquareTmp.innerHTML}</span><button class="show-details">${dt.title}</button><span class="importance-check">${this.starTmp.innerHTML}</span>`).join('');
+		this.taskList.innerHTML = data.map(dt => `<li class="${dt.completed ? 'completed ' : ''}${dt.important ? 'important ' : ''}" data-id="${dt.id}"><span class="completed-ckeck" title="Set it as complete">${this.checkSquareTmp.innerHTML}</span><button class="show-details">${dt.title}</button><span class="importance-check" title="Set it as important">${this.starTmp.innerHTML}</span>`).join('');
 		// Show counters
 		this.countMyDay.innerText = data.filter(d => d.my_day).length;
 		this.countImportant.innerText = data.filter(d => d.important).length;
@@ -65,9 +65,7 @@ export class Rminder {
 	}
 
 	addEventListeners(db) {
-		Array.from(this.addTaskBtn).forEach(btn => {
-			btn.addEventListener('click', () => { this.addTask(db); }, false);
-		});
+		this.addTaskBtn.addEventListener('click', () => { this.addTask(db); }, false);
 
 		this.taskList.addEventListener('click', e => {
 			if (e.target.classList.contains('show-details')) {
@@ -184,7 +182,7 @@ export class Rminder {
 			dt = data.find(d => d.id === id);
 		}
 		
-		this.detailsContainer.classList.remove('important', 'completed');
+		this.detailsContainer.classList.remove('important', 'completed', 'today');
 
 		if (dt?.important) {
 			this.detailsContainer.classList.add('important');
@@ -192,6 +190,10 @@ export class Rminder {
 
 		if (dt?.completed) {
 			this.detailsContainer.classList.add('completed');
+		}
+
+		if (dt?.my_day) {
+			this.detailsContainer.classList.add('today');
 		}
 	}
 }

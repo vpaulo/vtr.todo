@@ -4,6 +4,7 @@
 	--sidebar-width: 40px;
 	--main-width: 100%;
 	--details-width: 300px;
+	--lists-visibility: none;
 
 	// height: 100%;
 	overflow: hidden;
@@ -45,11 +46,15 @@ input {
 body {
 	margin: 0;
 	padding: 0;
-	// min-height: 100%;
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: 40px 1fr;
 	background-color: #f5f5f5;
+	color: #414141;
+}
+
+button {
+	color: #414141;
 }
 
 header {
@@ -61,6 +66,9 @@ header {
 .app__logo {
 	width: 40px;
 	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 #app {
@@ -71,11 +79,13 @@ header {
 .sidebar {
 	min-width: var(--sidebar-width);
 	width: var(--sidebar-width);
-	background-color: #fff;
+	background-color: #ededed;
 	overflow: hidden;
 
 	&.expanded {
 		--sidebar-width: 290px;
+		--lists-visibility: inline;
+		background-color: #fff;
 	}
 }
 
@@ -84,6 +94,9 @@ header {
 }
 
 .details {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 	min-width: var(--details-width);
 }
 
@@ -93,6 +106,19 @@ header {
 	> * {
 		display: none;
 	}
+}
+
+.detail__my-day {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.details:not(.details--closed) .details__footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: #fff;
 }
 
 .lists,
@@ -134,9 +160,39 @@ header {
 		outline: none;
 		color: #414141;
 
+		~ .add-task {
+			color: #08f;
+		}
+
 		&::placeholder {
 			color: #414141;
 		}
+	}
+}
+
+.add-task {
+	background: transparent;
+	border: transparent;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	letter-spacing: 1px;
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.add-task--label {
+	width: 24px;
+	height: 24px;
+	flex: 0 0 24px;
+	cursor: pointer;
+	text-align: center;
+	line-height: 28px;
+
+	&:hover .add-icon {
+		color: #08f;
 	}
 }
 
@@ -167,9 +223,11 @@ header {
 }
 
 .completed-ckeck,
-.importance-check {
+.importance-check,
+.my-day {
 	width: 20px;
 	height: 20px;
+	flex: 0 0 auto;
 	color: #414141;
 	cursor: pointer;
 
@@ -182,8 +240,7 @@ header {
 	.completed & {
 		color: #08f;
 	}
-	.completed &,
-	&:hover {
+	.completed & {
 		.icon-check {
 			visibility: visible;
 		}
@@ -194,11 +251,16 @@ header {
 	.important & {
 		color: #08f;
 	}
-	.important &,
-	&:hover {
+	.important & {
 		.icon-star-solid {
 			visibility: visible;
 		}
+	}
+}
+
+.my-day {
+	.today & {
+		color: #08f;
 	}
 }
 
@@ -208,7 +270,8 @@ header {
 	gap: 10px;
 }
 
-.title, .note {
+.title,
+.note {
 	width: 100%;
 	color: #414141;
 	font-size: 0.9rem;
@@ -220,7 +283,6 @@ header {
 }
 
 .title {
-
 	.completed & {
 		text-decoration: line-through from-font #08f;
 	}
@@ -253,10 +315,15 @@ header {
 .lists > li {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	padding: 10px 12px;
+	padding: 10px;
 	border-bottom: 2px solid #f5f5f5;
 	cursor: pointer;
+	gap: 10px;
+
+	span {
+		font-size: 0.8rem;
+		display: var(--lists-visibility);
+	}
 
 	&:hover {
 		background-color: #ededed;
@@ -271,16 +338,70 @@ header {
 	min-width: 30px;
 	text-align: center;
 	padding: 0 5px;
-	font-size: 0.8rem;
 	font-weight: 600;
 }
 
-
 .details__body {
-
 	& > div {
 		background-color: white;
 		margin: 10px 0;
 		padding: 10px 12px;
 	}
+}
+
+.rename {
+	background-color: transparent;
+	border: 1px solid transparent;
+	font-size: 0.8rem;
+	color: #08f;
+	font-weight: 600;
+	padding: 0;
+	cursor: pointer;
+
+	&:hover {
+		border-bottom-color: #08f;
+	}
+}
+
+.remove,
+.close {
+	background: transparent;
+	border: 0;
+	width: 36px;
+	height: 32px;
+	cursor: pointer;
+	line-height: 1px;
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.remove {
+	border-left: 1px solid #ededed;
+
+	&:hover .trash-icon {
+		color: #f46363;
+	}
+}
+
+.close {
+	border-right: 1px solid #ededed;
+
+	&:hover .close-icon {
+		color: #08f;
+	}
+}
+
+.sidebar__header {
+	display: flex;
+	align-content: center;
+	border-bottom: 2px solid #f5f5f5;
+	padding: 10px;
+}
+
+.menu {
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
 }
