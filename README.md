@@ -1,2 +1,2 @@
-# vtr.todo
+# Rminder
 Keep track of your tasks
