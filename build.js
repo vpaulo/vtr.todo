@@ -28,7 +28,7 @@ files.map(async file => {
 		console.log(`Minifying ${file} error.`, terserResult.error);
 	}
 	else {
-		const path = file.replace('src/', 'dist/');
+		const path = file.replace('src/', 'docs/');
 		writeFile(path, terserResult.code);
 	}
 });
@@ -41,7 +41,7 @@ function writeFile(path, content) {
 
 // Create main styles file
 (() => {
-	const distPath = './dist/css/styles.css';
+	const distPath = './docs/css/styles.css';
 	const result = sass.renderSync({
 		file: './src/scss/styles.scss',
 		outputStyle: 'compressed'
@@ -54,7 +54,7 @@ function writeFile(path, content) {
 
 // Create and minify html main page
 (() => {
-	const distPath = './dist/index.html';
+	const distPath = './docs/index.html';
 	const html = readFileSync('./src/index.html', 'utf8');
 	const result = htmlMinifier.minify(html, { collapseWhitespace: true, removeComments: true });
 	if (result) {
