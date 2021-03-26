@@ -9,7 +9,7 @@
         "ecmaVersion": 12,
         "sourceType": "module"
     },
-    "ignorePatterns": ["*.min.js", "dist/**/*.js"],
+    "ignorePatterns": ["*.min.js", "dist/**/*.js", "docs/**/*.js"],
     "rules": {
         "linebreak-style": [
             "error",
