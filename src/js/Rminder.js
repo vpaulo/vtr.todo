@@ -16,6 +16,7 @@ export class Rminder {
 		this.myDay = document.querySelector('.my-day');
 		this.importanceCheckBtn = this.detailsContainer.querySelector('.importance-check');
 		this.note = document.querySelector('.note');
+		this.noteBtn = document.querySelector('.add-note');
 		this.countMyDay = document.querySelector('.count-my-day');
 		this.countImportant = document.querySelector('.count-important');
 		this.countTasks = document.querySelector('.count-tasks');
@@ -149,9 +150,7 @@ export class Rminder {
 			this.handleEvent('myDayTask', db);
 		}, false);
 
-		this.note.addEventListener('blur', () => {
-			this.setTaskNote(db);
-		}, false);
+		this.noteBtn.addEventListener('click', () => { this.setTaskNote(db); }, false);
 
 		this.mediaQueryList.addEventListener('change', this.screenTest.bind(this), false);
 	}

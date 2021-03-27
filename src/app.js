@@ -7,5 +7,8 @@ import { dbMessage } from './js/dbMessage.js';
 	db.postMessage({ type: 'launch' });
 	db.onmessage = (event) => dbMessage(rminder, event.data, db);
 
+	if (rminder.smallMediaQuery.matches) {
+		rminder.sidebar.classList.remove('expanded');
+	}
 	rminder.screenTest(); 
 })();

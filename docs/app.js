@@ -1,1 +1,1 @@
-import{Rminder as s}from"./js/Rminder.js";import{dbMessage as e}from"./js/dbMessage.js";(()=>{const o=new s;const r=new Worker("./js/workers/dbw.js");r.postMessage({type:"launch"});r.onmessage=s=>e(o,s.data,r);o.screenTest()})();
+import{Rminder as s}from"./js/Rminder.js";import{dbMessage as e}from"./js/dbMessage.js";(()=>{const r=new s;const a=new Worker("./js/workers/dbw.js");a.postMessage({type:"launch"});a.onmessage=s=>e(r,s.data,a);if(r.smallMediaQuery.matches){r.sidebar.classList.remove("expanded")}r.screenTest()})();

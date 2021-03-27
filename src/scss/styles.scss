@@ -288,6 +288,8 @@ header {
 }
 
 .title {
+	text-overflow: ellipsis;
+	
 	.completed & {
 		text-decoration: line-through from-font var(--primary);
 	}
@@ -353,7 +355,15 @@ header {
 	}
 }
 
-.rename {
+.detail__note {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 10px;
+}
+
+.rename,
+.add-note {
 	background-color: transparent;
 	border: 1px solid transparent;
 	font-size: 0.8rem;
