@@ -439,7 +439,7 @@ header {
 	font-size: 0.8rem;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
 	.completed-ckeck,
 	.importance-check,
 	.my-day {
