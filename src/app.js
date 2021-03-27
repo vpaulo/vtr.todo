@@ -10,5 +10,6 @@ import { dbMessage } from './js/dbMessage.js';
 	if (rminder.smallMediaQuery.matches) {
 		rminder.sidebar.classList.remove('expanded');
 	}
-	rminder.screenTest(); 
+	rminder.screenTest();
+	rminder.setDocHeight(); 
 })();

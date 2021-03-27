@@ -153,6 +153,9 @@ export class Rminder {
 		this.noteBtn.addEventListener('click', () => { this.setTaskNote(db); }, false);
 
 		this.mediaQueryList.addEventListener('change', this.screenTest.bind(this), false);
+
+		window.addEventListener('resize', this.setDocHeight, false);
+		window.addEventListener('orientationchange', this.setDocHeight, false);
 	}
 
 	addTask(db) {
@@ -256,5 +259,9 @@ export class Rminder {
 		} else {
 			this.mainContainer.classList.remove('hidden');
 		}
+	}
+
+	setDocHeight() {
+		document.documentElement.style.setProperty('--vh', `${window.innerHeight}px`);
 	}
 }

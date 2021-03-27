@@ -8,6 +8,8 @@ $white: #fff;
 }
 
 :root {
+	--vh: 100vh;
+
 	--size-40: 40px;
 
 	--gap-10: 10px;
@@ -24,7 +26,6 @@ $white: #fff;
 	--primary: #08f;
 	--background: #f5f5f5;
 
-	// height: 100%;
 	overflow: hidden;
 }
 
@@ -315,7 +316,7 @@ header {
 .tasks {
 	overflow-y: auto;
 	height: calc(
-		100vh - (2 * var(--size-40) + 60px)
+		var(--vh) - (2 * var(--size-40) + 60px)
 	); // 60px is the add-tasks container height set by the input padding and font-size
 }
 
@@ -444,7 +445,7 @@ header {
 
 @media only screen and (max-width: 630px) {
 	.expanded {
-		height: calc(100vh - var(--size-40));
+		height: calc(var(--vh) - var(--size-40));
 	}
 
 	.sidebar.expanded {
