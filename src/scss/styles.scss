@@ -241,10 +241,6 @@ header {
 	flex: 0 0 auto;
 	color: var(--base-color);
 	cursor: pointer;
-
-	&:hover {
-		color: var(--primary);
-	}
 }
 
 .completed-ckeck {
@@ -441,6 +437,16 @@ header {
 
 .creation-date {
 	font-size: 0.8rem;
+}
+
+@media (hover: hover) {
+	.completed-ckeck,
+	.importance-check,
+	.my-day {
+		&:hover {
+			color: var(--primary);
+		}
+	}
 }
 
 @media only screen and (max-width: 630px) {
