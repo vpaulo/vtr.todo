@@ -15,6 +15,7 @@ export class Rminder {
 		this.close = document.querySelector('.close');
 		this.myDay = document.querySelector('.my-day');
 		this.importanceCheckBtn = this.detailsContainer.querySelector('.importance-check');
+		this.completedCheck = this.detailsContainer.querySelector('.completed-ckeck');
 		this.note = document.querySelector('.note');
 		this.noteBtn = document.querySelector('.add-note');
 		this.countMyDay = document.querySelector('.count-my-day');
@@ -105,6 +106,12 @@ export class Rminder {
 				this.handleEvent('completedTask', db, +parent.dataset.id);
 			}
 
+		}, false);
+
+		// TODO: create common function to handle completed check events
+		this.completedCheck.addEventListener('click', e => {
+			const parent = e.target.closest('[data-id]');
+			this.handleEvent('completedTask', db, +parent.dataset.id);
 		}, false);
 
 		this.lists.addEventListener('click', e => {
