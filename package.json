@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vpaulo/vtr.todo.git"
+    "url": "git+https://github.com/vpaulo/rminder.git"
   },
   "keywords": [
     "indexeddb",
@@ -23,9 +23,9 @@
   "author": "Vitor Rodrigues <vitorpaulorodrigues@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vpaulo/vtr.todo/issues"
+    "url": "https://github.com/vpaulo/rminder/issues"
   },
-  "homepage": "https://github.com/vpaulo/vtr.todo#readme",
+  "homepage": "https://github.com/vpaulo/reminder#readme",
   "devDependencies": {
     "eslint": "^7.18.0",
     "html-minifier": "^4.0.0",

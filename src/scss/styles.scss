@@ -345,6 +345,8 @@ header {
 }
 
 .details__body {
+	height: calc(var(--vh) - (2 * var(--size-40)));
+
 	> div {
 		background-color: $white;
 		margin: 10px 0;
