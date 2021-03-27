@@ -1,1 +1,0 @@
-import{Rminder as s}from"./js/Rminder.js";import{dbMessage as e}from"./js/dbMessage.js";(()=>{const o=new s;const r=new Worker("./js/workers/dbw.js");r.postMessage({type:"launch"});r.onmessage=s=>e(o,s.data,r);o.screenTest()})();
