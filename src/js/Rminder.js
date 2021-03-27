@@ -218,6 +218,8 @@ export class Rminder {
 	}
 
 	showList(list, db) {
+		document.querySelector('.list.selected')?.classList?.remove('selected');
+		document.querySelector(`.list[data-name="${list}"]`).classList.add('selected');
 		db.postMessage({ type: 'list', list });
 	}
 
