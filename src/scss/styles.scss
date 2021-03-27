@@ -8,15 +8,20 @@ $white: #fff;
 }
 
 :root {
+	--size-40: 40px;
+
+	--gap-10: 10px;
+	--gap-20: 20px;
+
 	--sidebar-width: 40px;
 	--main-width: 100%;
-	--details-width: 300px;
+	--details-width: 0;
 	--lists-visibility: none;
 
 	--base-color: #414141;
 	--base-grey: #ededed;
 	--base-red: #f46363;
-	--primary:  #08f;
+	--primary: #08f;
 	--background: #f5f5f5;
 
 	// height: 100%;
@@ -48,30 +53,34 @@ body {
 	padding: 0;
 	display: grid;
 	grid-template-columns: 1fr;
-	grid-template-rows: 40px 1fr;
+	grid-template-rows: var(--size-40) 1fr;
 	background-color: var(--background);
 	color: var(--base-color);
 }
 
 button {
-	color: var(--base-color);;
+	color: var(--base-color);
 }
 
 header {
 	@include flex-center;
-	gap: 10px;
+	gap: var(--gap-10);
+}
+
+.hidden {
+	display: none;
 }
 
 .app__logo {
 	@include flex-center;
-	width: 40px;
-	height: 40px;
+	width: var(--size-40);
+	height: var(--size-40);
 	justify-content: center;
 }
 
 #app {
 	display: flex;
-	gap: 20px;
+	gap: var(--gap-20);
 }
 
 .sidebar {
@@ -97,26 +106,27 @@ header {
 	flex-direction: column;
 	justify-content: space-between;
 	min-width: var(--details-width);
-	// height: calc(100% - 82px);
-}
 
-.details--closed {
-	--details-width: 0;
+	&:not(.expanded) {
+		> * {
+			display: none;
+		}
+	}
 
-	> * {
-		display: none;
+	&.expanded {
+		--details-width: 300px;
+
+		.details__footer {
+			@include flex-center;
+			justify-content: space-between;
+			background-color: $white;
+		}
 	}
 }
 
 .detail__my-day {
 	@include flex-center;
 	justify-content: space-between;
-}
-
-.details:not(.details--closed) .details__footer {
-	@include flex-center;
-	justify-content: space-between;
-	background-color: $white;
 }
 
 .lists,
@@ -143,7 +153,7 @@ header {
 }
 
 #task {
-	font-size: 1.4rem;
+	font-size: 1.3rem;
 	color: var(--primary);
 	padding: 16px 12px;
 	width: 100%;
@@ -262,7 +272,7 @@ header {
 
 .detail__title {
 	@include flex-center;
-	gap: 10px;
+	gap: var(--gap-10);
 }
 
 .title,
@@ -296,15 +306,11 @@ header {
 	}
 }
 
-// .container {
-// 	height: 100vh;
-// }
-
 .tasks {
 	overflow-y: auto;
 	height: calc(
-		100vh - 150px
-	); // 150 has to be the calculation of the header height with the add task height
+		100vh - (2 * var(--size-40) + 60px)
+	); // 60px is the add-tasks container height set by the input padding and font-size
 }
 
 .lists > li {
@@ -312,7 +318,7 @@ header {
 	padding: 10px;
 	border-bottom: 2px solid var(--background);
 	cursor: pointer;
-	gap: 10px;
+	gap: var(--gap-10);
 
 	span {
 		font-size: 0.8rem;
@@ -358,6 +364,10 @@ header {
 
 	&:hover {
 		border-bottom-color: var(--primary);
+	}
+
+	&:focus {
+		outline: none;
 	}
 }
 
@@ -407,6 +417,7 @@ header {
 .list-toolbar {
 	background-color: $white;
 	padding: 10px 12px;
+	height: var(--size-40);
 }
 
 .list-title {
@@ -415,4 +426,18 @@ header {
 
 .creation-date {
 	font-size: 0.8rem;
+}
+
+@media only screen and (max-width: 630px) {
+	.expanded {
+		height: calc(100vh - var(--size-40));
+	}
+
+	.sidebar.expanded {
+		--sidebar-width: 100%;
+	}
+
+	.details.expanded {
+		--details-width: calc(100% - var(--size-40) - var(--gap-20));
+	}
 }

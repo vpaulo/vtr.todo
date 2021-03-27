@@ -2,6 +2,9 @@ import { logger } from './logger.js';
 
 export class Rminder {
 	constructor() {
+		this.mediaQueryList = matchMedia('only screen and (max-width: 900px)');
+		this.smallMediaQuery = matchMedia('only screen and (max-width: 630px)');
+
 		this.taskInput = document.getElementById('task');
 		this.addTaskBtn = document.querySelector('.add-task');
 		this.taskList = document.querySelector('.tasks__list');
@@ -52,7 +55,7 @@ export class Rminder {
 		let title = 'Tasks';
 		let name = 'tasks';
 
-		if (list?.title) {	
+		if (list?.title) {
 			dt = list.value;
 			title = list.title;
 			name = list.name;
@@ -107,6 +110,10 @@ export class Rminder {
 			const list = e.target.dataset.name || e.target.closest('li').dataset.name;
 			if (list) {
 				this.showList(list, db);
+
+				if (this.smallMediaQuery.matches) {
+					this.hideSidebar();
+				}
 			}
 		}, false);
 
@@ -145,6 +152,8 @@ export class Rminder {
 		this.note.addEventListener('blur', () => {
 			this.setTaskNote(db);
 		}, false);
+
+		this.mediaQueryList.addEventListener('change', this.screenTest.bind(this), false);
 	}
 
 	addTask(db) {
@@ -175,16 +184,24 @@ export class Rminder {
 			if (id !== +this.detailsContainer.dataset.id) {
 				db.postMessage({ type: 'showDetails', id });
 			}
-			this.detailsContainer.classList.remove('details--closed');
+			this.detailsContainer.classList.add('expanded');
+			this.screenTest();
 		}
 	}
 
 	hideDetails() {
-		this.detailsContainer.classList.add('details--closed');
+		this.detailsContainer.classList.remove('expanded');
+		this.screenTest();
 	}
 
 	toggleSidebar() {
 		this.sidebar.classList.toggle('expanded');
+		this.screenTest(undefined, this.detailsContainer);
+	}
+
+	hideSidebar() {
+		this.sidebar.classList.remove('expanded');
+		this.screenTest();
 	}
 
 	handleEvent(type, db, id = +this.detailsContainer.dataset.id) {
@@ -208,11 +225,11 @@ export class Rminder {
 	setDetailClasses(data) {
 		const id = +this.detailsContainer.dataset.id;
 		let dt = data;
-		
+
 		if (Array.isArray(data)) {
 			dt = data.find(d => d.id === id);
 		}
-		
+
 		this.detailsContainer.classList.remove('important', 'completed', 'today');
 
 		if (dt?.important) {
@@ -225,6 +242,18 @@ export class Rminder {
 
 		if (dt?.my_day) {
 			this.detailsContainer.classList.add('today');
+		}
+	}
+
+	screenTest(mql = this.mediaQueryList, elem = this.sidebar) {
+		if (mql.matches && document.querySelectorAll('.expanded').length > 1) {
+			elem.classList.remove('expanded');
+		}
+
+		if (this.smallMediaQuery.matches && document.querySelector('.expanded')) {
+			this.mainContainer.classList.add('hidden');
+		} else {
+			this.mainContainer.classList.remove('hidden');
 		}
 	}
 }

@@ -6,4 +6,6 @@ import { dbMessage } from './js/dbMessage.js';
 
 	db.postMessage({ type: 'launch' });
 	db.onmessage = (event) => dbMessage(rminder, event.data, db);
+
+	rminder.screenTest(); 
 })();
