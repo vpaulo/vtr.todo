@@ -94,6 +94,7 @@ export class Rminder {
 		this.taskList.addEventListener('click', e => {
 			if (e.target.classList.contains('show-details')) {
 				this.showDetails(e.target, db);
+				this.setSelected(e.target.closest('[data-id]'));
 			}
 
 			if (e.target.classList.contains('importance-check') || e.target.closest('.importance-check')) {
@@ -200,6 +201,7 @@ export class Rminder {
 
 	hideDetails() {
 		this.detailsContainer.classList.remove('expanded');
+		this.taskList.querySelector('.selected')?.classList?.remove('selected');
 		this.screenTest();
 	}
 
@@ -270,5 +272,10 @@ export class Rminder {
 
 	setDocHeight() {
 		document.documentElement.style.setProperty('--vh', `${window.innerHeight}px`);
+	}
+
+	setSelected(el) {
+		this.taskList.querySelector('.selected')?.classList?.remove('selected');
+		el.classList.add('selected');
 	}
 }
