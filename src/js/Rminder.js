@@ -83,7 +83,7 @@ export class Rminder {
 		this.detailsContainer.dataset.id = data.id;
 		this.titleInput.value = data.title;
 		this.note.value = data.note || '';
-		this.creationDate.innerText = new Intl.DateTimeFormat().format(date);
+		this.creationDate.innerText = new Intl.DateTimeFormat('en-GB').format(date);
 
 		this.setDetailClasses(data);
 	}
