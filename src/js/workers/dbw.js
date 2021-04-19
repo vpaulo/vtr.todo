@@ -43,6 +43,10 @@ function openDb() {
 	};
 }
 
+function closeDb() {
+	rminder.db.close();
+}
+
 function useDB() {
 	rminder.db.onversionchange = (evt) => {
 		rminder.db.close();
@@ -167,6 +171,12 @@ onmessage = (e) => {
 	const { type } = e.data;
 
 	switch (type) {
+		case 'start':
+			openDb();
+			break;
+		case 'close':
+			closeDb();
+			break;
 		// case 'getBlob':
 		// 		getBlob(e.data.key);
 		// 		break;
@@ -206,5 +216,3 @@ onmessage = (e) => {
 			break;
 	}
 };
-
-openDb();

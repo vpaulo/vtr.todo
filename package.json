@@ -5,7 +5,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "test": "karma start karma.conf.cjs",
+    "test:ci": "start-server-and-test start http://localhost:5500 test",
     "lint": "eslint **/src/**/*.js",
     "build": "npm run lint && node build.js && cp ./src/site.webmanifest ./docs/ && cp -r ./src/favicons/ ./docs/"
   },
@@ -27,11 +29,25 @@
   },
   "homepage": "https://github.com/vpaulo/reminder#readme",
   "devDependencies": {
+    "chai": "^4.3.4",
     "eslint": "^7.18.0",
+    "express": "^4.17.1",
     "html-minifier": "^4.0.0",
+    "karma": "^6.3.2",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-cli": "^2.0.0",
+    "karma-coverage": "^2.0.3",
+    "karma-mocha": "^2.0.1",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-testdouble": "^1.0.2",
     "mkdirp": "^1.0.4",
+    "mocha": "^8.3.2",
+    "puppeteer": "^8.0.0",
     "sass": "^1.32.5",
-    "terser": "^5.5.1"
+    "start-server-and-test": "^1.12.1",
+    "terser": "^5.5.1",
+    "testdouble": "^3.16.1"
   },
   "engines": {
     "node": ">= 14.12.0",

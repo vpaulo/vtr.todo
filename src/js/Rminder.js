@@ -14,8 +14,8 @@ export class Rminder {
 		this.remove = document.querySelector('.remove');
 		this.close = document.querySelector('.close');
 		this.myDay = document.querySelector('.my-day');
-		this.importanceCheckBtn = this.detailsContainer.querySelector('.importance-check');
-		this.completedCheck = this.detailsContainer.querySelector('.completed-ckeck');
+		this.importanceCheckBtn = this.detailsContainer?.querySelector('.importance-check');
+		this.completedCheck = this.detailsContainer?.querySelector('.completed-ckeck');
 		this.note = document.querySelector('.note');
 		this.noteBtn = document.querySelector('.add-note');
 		this.countMyDay = document.querySelector('.count-my-day');
@@ -116,7 +116,7 @@ export class Rminder {
 		}, false);
 
 		this.lists.addEventListener('click', e => {
-			const list = e.target.dataset.name || e.target.closest('li').dataset.name;
+			const list = e.target?.dataset.name || e.target.closest('li')?.dataset.name;
 			if (list) {
 				this.showList(list, db);
 
@@ -264,9 +264,9 @@ export class Rminder {
 		}
 
 		if (this.smallMediaQuery.matches && document.querySelector('.expanded')) {
-			this.mainContainer.classList.add('hidden');
+			this.mainContainer?.classList.add('hidden');
 		} else {
-			this.mainContainer.classList.remove('hidden');
+			this.mainContainer?.classList.remove('hidden');
 		}
 	}
 
