@@ -303,7 +303,7 @@ describe('Rminder', () => {
 			expect(rminder.detailsContainer.dataset.id).equals('1');
 			expect(rminder.titleInput.value).equals('test');
 			expect(rminder.note.value).equals('something to take note');
-			expect(rminder.creationDate.innerText).equals('26/03/2021');
+			expect(rminder.creationDate.innerText).equals(new Intl.DateTimeFormat().format(new Date(1616785736469)));
 
 			td.verify(rminder.setDetailClasses(data.value));
 		});
