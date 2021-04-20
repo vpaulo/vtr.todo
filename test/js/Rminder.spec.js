@@ -376,7 +376,8 @@ describe('Rminder', () => {
 			const data = {
 				type: 'renameTask',
 				id: 2,
-				title: 'test2'
+				title: 'test2',
+				list: ''
 			};
 
 			rminder.titleInput.value = 'test2';
@@ -538,7 +539,8 @@ describe('Rminder', () => {
 
 			const data = {
 				id: 1,
-				type: 'importantTask'
+				type: 'importantTask',
+				list: ''
 			}
 
 			rminder.handleEvent('importantTask', db, 1);
@@ -553,7 +555,8 @@ describe('Rminder', () => {
 
 			const data = {
 				id: 1,
-				type: 'importantTask'
+				type: 'importantTask',
+				list: ''
 			}
 
 			rminder.detailsContainer.dataset.id = '1';
@@ -573,7 +576,8 @@ describe('Rminder', () => {
 			const data = {
 				type: 'noteTask',
 				id: 1,
-				note: 'something'
+				note: 'something',
+				list: ''
 			};
 
 			rminder.note.value = 'something';

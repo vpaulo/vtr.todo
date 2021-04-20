@@ -180,8 +180,9 @@ export class Rminder {
 	renameTask(db) {
 		const title = this.titleInput.value.trim();
 		const id = +this.detailsContainer.dataset.id; // convert id to number
+		const list = this.mainContainer.dataset.list;
 		if (title) {
-			db.postMessage({ type: 'renameTask', id, title });
+			db.postMessage({ type: 'renameTask', id, title, list });
 		} else {
 			logger('Required field(s) missing: title');
 		}
@@ -216,14 +217,16 @@ export class Rminder {
 	}
 
 	handleEvent(type, db, id = +this.detailsContainer.dataset.id) {
-		db.postMessage({ type, id });
+		const list = this.mainContainer.dataset.list;
+		db.postMessage({ type, id, list });
 	}
 
 	setTaskNote(db) {
 		const id = +this.detailsContainer.dataset.id;
 		const text = this.note.value.trim();
+		const list = this.mainContainer.dataset.list;
 		if (text) {
-			db.postMessage({ type: 'noteTask', id, note: text });
+			db.postMessage({ type: 'noteTask', id, note: text, list });
 		} else {
 			logger('Required field(s) missing: note');
 		}

@@ -90,7 +90,7 @@ function addTask(title, creation_date, list) {
 	};
 }
 
-function removeTaskById(id) {
+function removeTaskById(id, list) {
 	const store = getObjectStore(rminder.storeNames[0], 'readwrite');
 	store.openCursor().onsuccess = (evt) => {
 		const cursor = evt.target.result;
@@ -105,7 +105,7 @@ function removeTaskById(id) {
 			// Move on to the next object in store
 			cursor.continue();
 		} else {
-			displayTasks(store);
+			displayTasks(store, list);
 		}
 	};
 }
@@ -124,7 +124,7 @@ function showDetails(id) {
 	};
 }
 
-function updateTask(id, field, fieldValue) {
+function updateTask(id, field, fieldValue, list) {
 	const store = getObjectStore(rminder.storeNames[0], 'readwrite');
 	store.openCursor().onsuccess = (evt) => {
 		const cursor = evt.target.result;
@@ -143,7 +143,7 @@ function updateTask(id, field, fieldValue) {
 			// Move on to the next object in store
 			cursor.continue();
 		} else {
-			displayTasks(store);
+			displayTasks(store, list);
 		}
 	};
 }
@@ -184,25 +184,25 @@ onmessage = (e) => {
 			addTask(e.data.title, e.data.creationDate, e.data.list);
 			break;
 		case 'removeTask':
-			removeTaskById(e.data.id);
+			removeTaskById(e.data.id, e.data.list);
 			break;
 		case 'renameTask':
-			updateTask(e.data.id, 'title', e.data.title);
+			updateTask(e.data.id, 'title', e.data.title, e.data.list);
 			break;
 		case 'showDetails':
 			showDetails(e.data.id);
 			break;
 		case 'importantTask':
-			updateTask(e.data.id, 'important');
+			updateTask(e.data.id, 'important', undefined, e.data.list);
 			break;
 		case 'myDayTask':
-			updateTask(e.data.id, 'my_day');
+			updateTask(e.data.id, 'my_day', undefined, e.data.list);
 			break;
 		case 'noteTask':
-			updateTask(e.data.id, 'note', e.data.note);
+			updateTask(e.data.id, 'note', e.data.note, e.data.list);
 			break;
 		case 'completedTask':
-			updateTask(e.data.id, 'completed');
+			updateTask(e.data.id, 'completed', undefined, e.data.list);
 			break;
 		// case 'clear':
 		// 		clearObjectStore();
