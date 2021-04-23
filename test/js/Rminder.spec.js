@@ -876,10 +876,23 @@ describe('Rminder', () => {
 
 		it('Should call handleEvent for completedTask', () => {
 			td.replace(rminder, 'handleEvent');
+			td.replace(rminder, 'hideDetails');
 
 			rminder.completedCheck.click();
 
 			td.verify(rminder.handleEvent('completedTask', db, 0));
+			td.verify(rminder.hideDetails(), { times: 0 });
+		});
+
+		it('Should call handleEvent for completedTask and hideDetails', () => {
+			td.replace(rminder, 'handleEvent');
+			td.replace(rminder, 'hideDetails');
+			rminder.toggleCompleted.checked = true;
+
+			rminder.completedCheck.click();
+
+			td.verify(rminder.handleEvent('completedTask', db, 0));
+			td.verify(rminder.hideDetails());
 		});
 
 		it('Should call setTaskNote', () => {
@@ -901,7 +914,7 @@ describe('Rminder', () => {
 		it('Should call renameTask on keyup', () => {
 			td.replace(rminder, 'renameTask');
 
-			rminder.titleInput.dispatchEvent(new KeyboardEvent('keyup',{key:'Enter', code: 'Enter'}));
+			rminder.titleInput.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter' }));
 
 			td.verify(rminder.renameTask(db));
 		});
@@ -909,15 +922,15 @@ describe('Rminder', () => {
 		it('Should not call renameTask on keyup if key is not enter', () => {
 			td.replace(rminder, 'renameTask');
 
-			rminder.titleInput.dispatchEvent(new KeyboardEvent('keyup',{key:'a', code: 'KeyA'}));
+			rminder.titleInput.dispatchEvent(new KeyboardEvent('keyup', { key: 'a', code: 'KeyA' }));
 
-			td.verify(rminder.renameTask(), {times: 0, ignoreExtraArgs: true});
+			td.verify(rminder.renameTask(), { times: 0, ignoreExtraArgs: true });
 		});
 
 		it('Should call addTask on keyup', () => {
 			td.replace(rminder, 'addTask');
 
-			rminder.taskInput.dispatchEvent(new KeyboardEvent('keyup',{key:'Enter', code: 'Enter'}));
+			rminder.taskInput.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter' }));
 
 			td.verify(rminder.addTask(db));
 		});
@@ -925,9 +938,9 @@ describe('Rminder', () => {
 		it('Should not call addTask on keyup if key is not enter', () => {
 			td.replace(rminder, 'addTask');
 
-			rminder.taskInput.dispatchEvent(new KeyboardEvent('keyup',{key:'a', code: 'KeyA'}));
+			rminder.taskInput.dispatchEvent(new KeyboardEvent('keyup', { key: 'a', code: 'KeyA' }));
 
-			td.verify(rminder.addTask(), {times: 0, ignoreExtraArgs: true});
+			td.verify(rminder.addTask(), { times: 0, ignoreExtraArgs: true });
 		});
 
 		it('Should call showList on li click', () => {
@@ -954,7 +967,7 @@ describe('Rminder', () => {
 
 			rminder.lists.click();
 
-			td.verify(rminder.showList(), {times: 0, ignoreExtraArgs: true});
+			td.verify(rminder.showList(), { times: 0, ignoreExtraArgs: true });
 		});
 
 		it('Should call showDetails and setSelected on li click', () => {
@@ -991,8 +1004,8 @@ describe('Rminder', () => {
 
 			rminder.taskList.click();
 
-			td.verify(rminder.showDetails(), {times: 0, ignoreExtraArgs: true});
-			td.verify(rminder.setSelected(), {times: 0, ignoreExtraArgs: true});
+			td.verify(rminder.showDetails(), { times: 0, ignoreExtraArgs: true });
+			td.verify(rminder.setSelected(), { times: 0, ignoreExtraArgs: true });
 		});
 
 		it('Should call handleEvent with importantTask', () => {
@@ -1018,6 +1031,7 @@ describe('Rminder', () => {
 
 		it('Should call handleEvent with completedTask', () => {
 			td.replace(rminder, 'handleEvent');
+			td.replace(rminder, 'hideDetails');
 			const task = {
 				value: [{
 					id: 1,
@@ -1035,6 +1049,32 @@ describe('Rminder', () => {
 			rminder.taskList.querySelector('.completed-ckeck').click();
 
 			td.verify(rminder.handleEvent('completedTask', db, 1));
+			td.verify(rminder.hideDetails(), {times: 0});
+		});
+
+		it('Should call handleEvent with completedTask and hideDetails', () => {
+			td.replace(rminder, 'handleEvent');
+			td.replace(rminder, 'hideDetails');
+			rminder.toggleCompleted.checked = true;
+			rminder.detailsContainer.dataset.id = '1';
+			const task = {
+				value: [{
+					id: 1,
+					completed: true,
+					important: true,
+					title: 'test',
+					my_day: false,
+					note: '',
+					creation_date: 1616785736469
+				}]
+			};
+
+			rminder.tasks(task);
+
+			rminder.taskList.querySelector('.completed-ckeck').click();
+
+			td.verify(rminder.handleEvent('completedTask', db, 1));
+			td.verify(rminder.hideDetails());
 		});
 
 		it('Should call settingsCompleted on toggle-completed click', () => {

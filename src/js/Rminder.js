@@ -108,6 +108,9 @@ export class Rminder {
 
 			if (e.target.classList.contains('completed-ckeck') || e.target.closest('.completed-ckeck')) {
 				const parent = e.target.closest('[data-id]');
+				if (parent.dataset.id === this.detailsContainer.dataset.id && this.toggleCompleted.checked) {
+					this.hideDetails();
+				}
 				this.handleEvent('completedTask', db, +parent.dataset.id);
 			}
 
@@ -116,6 +119,9 @@ export class Rminder {
 		// TODO: create common function to handle completed check events
 		this.completedCheck.addEventListener('click', e => {
 			const parent = e.target.closest('[data-id]');
+			if (this.toggleCompleted.checked) {
+				this.hideDetails();
+			}
 			this.handleEvent('completedTask', db, +parent.dataset.id);
 		}, false);
 
@@ -240,13 +246,13 @@ export class Rminder {
 		}
 	}
 
-	selectList({list}) {
+	selectList({ list }) {
 		document.querySelector('.list.selected')?.classList?.remove('selected');
 		document.querySelector(`.list[data-name="${list}"]`).classList.add('selected');
 	}
 
 	showList(list, db) {
-		this.selectList({list});
+		this.selectList({ list });
 		db.postMessage({ type: 'list', list });
 	}
 
@@ -304,13 +310,13 @@ export class Rminder {
 		this.settingsBtn.classList.toggle('open');
 	}
 
-	settings({settings} = {}) {
-		if(!settings) {
+	settings({ settings } = {}) {
+		if (!settings) {
 			return false;
 		}
 
 		const completedList = this.lists.querySelector('[data-name="completed"]');
-		if(settings.completed === 'hide') {
+		if (settings.completed === 'hide') {
 			this.toggleCompleted.checked = true;
 			completedList.classList.add('hidden');
 			if (completedList.classList.contains('selected')) {
