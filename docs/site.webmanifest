@@ -1,7 +1,8 @@
 {
     "name": "Rminder",
     "short_name": "rminder",
-    "start_url": "/rminder/index.html",
+    "start_url": "./",
+    "scope": ".",
     "icons": [
         {
             "src": "favicons/icon-192x192.png",
