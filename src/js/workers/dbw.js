@@ -2,6 +2,7 @@ const rminder = {
 	name: 'rminder',
 	version: 2, // Use a long long for this value (don't use a float)
 	storeNames: ['tasks', 'settings'],
+	settings: { completed: 'show', list: 'tasks' }
 };
 
 const titles = {
@@ -159,7 +160,7 @@ function updateTask(id, field, fieldValue, list) {
 	};
 }
 
-function displayTasks(store, list, settings) {
+function displayTasks(store, list, settings = rminder.settings) {
 
 	if (typeof store == 'undefined') {
 		store = getObjectStore(rminder.storeNames[0], 'readonly');
@@ -181,7 +182,6 @@ function displayTasks(store, list, settings) {
 }
 
 function updateSettings(completed, list) {
-	let st = {};
 	const cmpl = completed ? 'hide' : 'show';
 	const settings = getObjectStore(rminder.storeNames[1], 'readwrite');
 
@@ -196,7 +196,7 @@ function updateSettings(completed, list) {
 
 			updateSettings.list = list;
 
-			st.completed = updateSettings.completed;
+			rminder.settings = updateSettings;
 
 			const request = cursor.update(updateSettings);
 			request.onsuccess = () => {
@@ -205,7 +205,7 @@ function updateSettings(completed, list) {
 			// Move on to the next object in store
 			cursor.continue();
 		} else {
-			displayTasks(undefined, list, st);
+			displayTasks(undefined, list, rminder.settings);
 		}
 	};
 }
@@ -218,6 +218,7 @@ function getSettings() {
 		if (e.target.result.length === 0) {
 			setDefaultSettings();
 		} else {
+			rminder.settings = result[0];
 			displayTasks(undefined, result[0].list, result[0]);
 			postMessage({ type: 'selectList', list: result[0].list });
 		}
@@ -225,12 +226,11 @@ function getSettings() {
 }
 
 function setDefaultSettings() {
-	const obj = { completed: 'show', list: 'tasks' };
 	const settings = getObjectStore(rminder.storeNames[1], 'readwrite');
-	const req = settings.add(obj);
+	const req = settings.add(rminder.settings);
 	req.onsuccess = () => {
 		postMessage({ type: 'success', message: 'Set default settings: successful' });
-		displayTasks(undefined, undefined, obj);
+		displayTasks(undefined, rminder.settings.list, rminder.settings);
 	};
 	req.onerror = () => {
 		postMessage({ type: 'failure', message: `Set default settings: error -> ${req.error}` });
