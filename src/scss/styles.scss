@@ -65,6 +65,12 @@ button {
 
 header {
 	@include flex-center;
+	justify-content: space-between;
+	gap: var(--gap-10);
+}
+
+.header__start {
+	@include flex-center;
 	gap: var(--gap-10);
 }
 
@@ -72,11 +78,51 @@ header {
 	display: none;
 }
 
-.app__logo {
+.app__logo,
+.app__settings {
 	@include flex-center;
 	width: var(--size-40);
 	height: var(--size-40);
 	justify-content: center;
+}
+
+.app__settings {
+	position: relative;
+	cursor: pointer;
+
+	&.open {
+		color: var(--primary);
+	}
+}
+
+.settings {
+	display: none;
+	color: var(--base-color);
+	position: absolute;
+	width: 300px;
+	background-color: $white;
+	padding: 20px;
+	top: var(--size-40);
+	margin-top: 4px;
+	right: 10px;
+	box-shadow: 2px 2px 10px var(--base-color);
+	cursor: auto;
+
+	.open & {
+		display: block;
+	}
+
+	&::before {
+		content: '';
+		width: 0;
+		height: 0;
+		border-left: 10px solid transparent;
+		border-right: 10px solid transparent;
+		border-bottom: 10px solid $white;
+		position: absolute;
+		top: -10px;
+		right: 0;
+	}
 }
 
 #app {
@@ -317,7 +363,7 @@ header {
 	); // 60px is the add-tasks container height set by the input padding and font-size
 }
 
-.lists > li {
+.list {
 	@include flex-center;
 	padding: 10px;
 	border-bottom: 2px solid var(--background);
@@ -327,6 +373,10 @@ header {
 	span {
 		font-size: 0.8rem;
 		display: var(--lists-visibility);
+	}
+
+	&.hidden {
+		display: none;
 	}
 
 	&:hover {
@@ -440,6 +490,50 @@ header {
 
 .creation-date {
 	font-size: 0.8rem;
+}
+
+.switch {
+	@include flex-center;
+	justify-content: space-between;
+
+	.text {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	input {
+		display: none;
+
+		&:checked + .slider {
+			background-color: var(--primary);
+
+			&:before {
+				transform: translateX(20px);
+			}
+		}
+	}
+}
+
+.slider {
+	@include flex-center;
+	flex: 0 0 40px;
+	width: var(--size-40);
+	height: 20px;
+	cursor: pointer;
+	background-color: var(--base-grey);
+	border-radius: 20px;
+	transition: 0.4s;
+
+	&:before {
+		content: '';
+		height: 16px;
+		width: 16px;
+		margin: 0 2px;
+		background-color: $white;
+		border-radius: 50%;
+		transition: 0.4s;
+	}
 }
 
 @media (hover: hover) and (pointer: fine) {

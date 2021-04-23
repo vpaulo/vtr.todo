@@ -9,6 +9,21 @@ describe('Rminder', () => {
 		document.body.innerHTML = `
 		<template id="check-square"><span>check</span></template>
 		<template id="star"><span>star</span></template>
+		<header>
+			<div class="header__start">
+				<span class="app__logo"></span>
+				<span class="app__name">RMINDER</span>
+			</div>
+			<span class="app__settings">
+				<div class="settings">
+					<label class="switch">
+						<span class="text">Hide Completed</span>
+						<input class="toggle-completed" type="checkbox">
+						<span class="slider"></span>
+					</label>
+				</div>
+			</span>
+		</header>
 		<main id="app">
 			<!-- left colunm -->
 			<aside class="sidebar expanded" aria-label="Lists menu">
@@ -25,6 +40,10 @@ describe('Rminder', () => {
 							<li class="list" data-name="important" role="treeitem" aria-label="Important">
 								<span>Important</span>
 								<span class="count count-important"></span>
+							</li>
+							<li class="list" data-name="completed" role="treeitem" aria-label="Completed">
+								<span>Completed</span>
+								<span class="count count-completed"></span>
 							</li>
 							<li class="list selected" data-name="tasks" role="treeitem" aria-label="Tasks">
 								<span>Tasks</span>
@@ -719,6 +738,96 @@ describe('Rminder', () => {
 		});
 	});
 
+	describe('Rminder.settingsCompleted', () => {
+		it('Should postMessage with completed true', () => {
+			const db = {
+				postMessage: td.func()
+			};
+
+			rminder.toggleCompleted.checked = true;
+
+			rminder.settingsCompleted(rminder.toggleCompleted, db);
+
+			td.verify(db.postMessage({ type: 'settings', completed: true, list: '' }));
+		});
+		it('Should postMessage with completed false', () => {
+			const db = {
+				postMessage: td.func()
+			};
+
+			rminder.toggleCompleted.checked = false;
+
+			rminder.settingsCompleted(rminder.toggleCompleted, db);
+
+			td.verify(db.postMessage({ type: 'settings', completed: false, list: '' }));
+		});
+	});
+
+	describe('Rminder.settingsToggle', () => {
+		it('Should toggle open class', () => {
+			rminder.settingsBtn.classList.remove('open');
+
+			rminder.settingsToggle();
+
+			expect(rminder.settingsBtn.classList.contains('open')).to.be.true;
+
+			rminder.settingsToggle();
+
+			expect(rminder.settingsBtn.classList.contains('open')).to.be.false;
+		});
+	});
+
+	describe('Rminder.settings', () => {
+		it('Should return false if no settings', () => {
+			expect(rminder.settings()).to.be.false;
+		});
+		it('Should hide Completed tasks', () => {
+			const completedList = rminder.lists.querySelector('[data-name="completed"]');
+			const data = {
+				settings: {
+					completed: 'hide'
+				}
+			}
+
+			rminder.settings(data);
+
+			expect(rminder.toggleCompleted.checked).to.be.true;
+			expect(completedList.classList.contains('hidden')).to.be.true;
+		});
+		it('Should select Tasks list if Completed list is selected before hidding', () => {
+			const completedList = rminder.lists.querySelector('[data-name="completed"]');
+			const tasksList = rminder.lists.querySelector('[data-name="tasks"]');
+			const data = {
+				settings: {
+					completed: 'hide'
+				}
+			}
+
+			completedList.classList.add('selected');
+
+			td.replace(tasksList, 'click')
+
+			rminder.settings(data);
+
+			expect(rminder.toggleCompleted.checked).to.be.true;
+			expect(completedList.classList.contains('hidden')).to.be.true;
+			td.verify(tasksList.click());
+		});
+		it('Should show Completed tasks', () => {
+			const completedList = rminder.lists.querySelector('[data-name="completed"]');
+			const data = {
+				settings: {
+					completed: 'show'
+				}
+			}
+
+			rminder.settings(data);
+
+			expect(rminder.toggleCompleted.checked).to.be.false;
+			expect(completedList.classList.contains('hidden')).to.be.false;
+		});
+	});
+
 	describe('Rminder.addEventListeners', () => {
 		let db;
 
@@ -926,6 +1035,14 @@ describe('Rminder', () => {
 			rminder.taskList.querySelector('.completed-ckeck').click();
 
 			td.verify(rminder.handleEvent('completedTask', db, 1));
+		});
+
+		it('Should call settingsCompleted on toggle-completed click', () => {
+			td.replace(rminder, 'settingsCompleted');
+
+			rminder.toggleCompleted.click();
+
+			td.verify(rminder.settingsCompleted(rminder.toggleCompleted, db));
 		});
 	});
 });

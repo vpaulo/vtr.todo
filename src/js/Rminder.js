@@ -20,6 +20,7 @@ export class Rminder {
 		this.noteBtn = document.querySelector('.add-note');
 		this.countMyDay = document.querySelector('.count-my-day');
 		this.countImportant = document.querySelector('.count-important');
+		this.countCompleted = document.querySelector('.count-completed');
 		this.countTasks = document.querySelector('.count-tasks');
 		this.menuBtn = document.querySelector('.menu');
 		this.sidebar = document.querySelector('.sidebar');
@@ -29,6 +30,8 @@ export class Rminder {
 		this.listTitle = document.querySelector('.list-title');
 		this.mainContainer = document.querySelector('.main');
 		this.creationDate = document.querySelector('.creation-date');
+		this.toggleCompleted = document.querySelector('.toggle-completed');
+		this.settingsBtn = document.querySelector('.app__settings');
 	}
 
 	launch(data) {
@@ -68,6 +71,7 @@ export class Rminder {
 		// Show counters
 		this.countMyDay.innerText = data.filter(d => d.my_day).length;
 		this.countImportant.innerText = data.filter(d => d.important).length;
+		this.countCompleted.innerText = data.filter(d => d.completed).length;
 		this.countTasks.innerText = data.length; // TODO: change total for tasks list after adding lists functionality
 		// Set List title
 		this.listTitle.innerText = title;
@@ -162,6 +166,10 @@ export class Rminder {
 
 		this.mediaQueryList.addEventListener('change', this.screenTest.bind(this), false);
 
+		this.toggleCompleted.addEventListener('click', (evt) => { this.settingsCompleted(evt.target, db); }, false);
+
+		this.settingsBtn.addEventListener('click', this.settingsToggle.bind(this), false);
+
 		window.addEventListener('resize', this.setDocHeight, false);
 		window.addEventListener('orientationchange', this.setDocHeight, false);
 	}
@@ -232,9 +240,13 @@ export class Rminder {
 		}
 	}
 
-	showList(list, db) {
+	selectList({list}) {
 		document.querySelector('.list.selected')?.classList?.remove('selected');
 		document.querySelector(`.list[data-name="${list}"]`).classList.add('selected');
+	}
+
+	showList(list, db) {
+		this.selectList({list});
 		db.postMessage({ type: 'list', list });
 	}
 
@@ -280,5 +292,33 @@ export class Rminder {
 	setSelected(el) {
 		this.taskList.querySelector('.selected')?.classList?.remove('selected');
 		el.classList.add('selected');
+	}
+
+	settingsCompleted(elem, db) {
+		const checked = elem.checked;
+		const list = this.mainContainer.dataset.list;
+		db.postMessage({ type: 'settings', completed: checked, list });
+	}
+
+	settingsToggle() {
+		this.settingsBtn.classList.toggle('open');
+	}
+
+	settings({settings} = {}) {
+		if(!settings) {
+			return false;
+		}
+
+		const completedList = this.lists.querySelector('[data-name="completed"]');
+		if(settings.completed === 'hide') {
+			this.toggleCompleted.checked = true;
+			completedList.classList.add('hidden');
+			if (completedList.classList.contains('selected')) {
+				this.lists.querySelector('[data-name="tasks"]').click(); // Select Tasks list if Completed list was selected before hidding
+			}
+		} else {
+			this.toggleCompleted.checked = false;
+			completedList.classList.remove('hidden');
+		}
 	}
 }
