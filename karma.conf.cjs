@@ -19,7 +19,8 @@ module.exports = function (config) {
     files: [
       { pattern: 'js/workers/dbw.js', included: false },
       { pattern: '**/*.js', type: 'module' },
-      { pattern: '../test/**/*.spec.js', type: 'module' },
+      { pattern: '../test/js/*.spec.js', type: 'module' },
+      { pattern: '../test/App.spec.js', type: 'module' },
     ],
 
 
