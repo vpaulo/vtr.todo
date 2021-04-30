@@ -32,6 +32,8 @@ export class Rminder {
 		this.creationDate = document.querySelector('.creation-date');
 		this.toggleCompleted = document.querySelector('.toggle-completed');
 		this.settingsBtn = document.querySelector('.app__settings');
+		this.filterBtn = document.querySelector('.list-filter');
+		[...this.orderFilters] = document.querySelectorAll('.order-filter');
 	}
 
 	launch(data) {
@@ -174,7 +176,10 @@ export class Rminder {
 
 		this.toggleCompleted.addEventListener('click', (evt) => { this.settingsCompleted(evt.target, db); }, false);
 
-		this.settingsBtn.addEventListener('click', this.settingsToggle.bind(this), false);
+		this.settingsBtn.addEventListener('click', () => this.toggle(this.settingsBtn), false);
+		this.filterBtn.addEventListener('click', () => this.toggle(this.filterBtn), false);
+
+		this.orderFilters.forEach(filter => filter.addEventListener('change', evt => { this.filterUpdate(evt.target, db); }, false));
 
 		window.addEventListener('resize', this.setDocHeight, false);
 		window.addEventListener('orientationchange', this.setDocHeight, false);
@@ -306,8 +311,8 @@ export class Rminder {
 		db.postMessage({ type: 'settings', completed: checked, list });
 	}
 
-	settingsToggle() {
-		this.settingsBtn.classList.toggle('open');
+	toggle(elem) {
+		elem.classList.toggle('open');
 	}
 
 	settings({ settings } = {}) {
@@ -326,5 +331,17 @@ export class Rminder {
 			this.toggleCompleted.checked = false;
 			completedList.classList.remove('hidden');
 		}
+
+		if (settings.filter) {
+			this.orderFilters.forEach(filter => {
+				if (filter.value === settings.filter) {
+					filter.parentNode.click();
+				}
+			});
+		}
+	}
+
+	filterUpdate(elem, db) {
+		db.postMessage({ type: 'filter', filter: elem.value });
 	}
 }

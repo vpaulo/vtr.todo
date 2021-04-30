@@ -61,6 +61,14 @@ describe('Rminder', () => {
 			<div class="main" role="main" data-list="">
 				<div class="list-toolbar">
 					<span class="list-title">Tasks</span>
+					<span class="list-filter">
+						<div class="filters">
+							<span class="legend">Order by:</span>
+							<label class="switch"><span class="text">Important</span> <input class="order-filter" name="order-filter" type="radio" value="important"> <span class="radio"></span></label>
+							<label class="switch"><span class="text">Oldest</span> <input class="order-filter" name="order-filter" value="oldest" type="radio" checked> <span class="radio"></span></label>
+							<label class="switch"><span class="text">Newest</span> <input class="order-filter" name="order-filter" value="newest" type="radio"> <span class="radio"></span></label>
+						</div>
+					</span>
 				</div>
 				<div class="container">
 					<div class="add-tasks">
@@ -763,15 +771,15 @@ describe('Rminder', () => {
 		});
 	});
 
-	describe('Rminder.settingsToggle', () => {
+	describe('Rminder.toggle', () => {
 		it('Should toggle open class', () => {
 			rminder.settingsBtn.classList.remove('open');
 
-			rminder.settingsToggle();
+			rminder.toggle(rminder.settingsBtn);
 
 			expect(rminder.settingsBtn.classList.contains('open')).to.be.true;
 
-			rminder.settingsToggle();
+			rminder.toggle(rminder.settingsBtn);
 
 			expect(rminder.settingsBtn.classList.contains('open')).to.be.false;
 		});
@@ -819,12 +827,53 @@ describe('Rminder', () => {
 				settings: {
 					completed: 'show'
 				}
-			}
+			};
 
 			rminder.settings(data);
 
 			expect(rminder.toggleCompleted.checked).to.be.false;
 			expect(completedList.classList.contains('hidden')).to.be.false;
+		});
+		it('Should set order filter', () => {
+			const data = {
+				settings: {
+					filter: 'important'
+				}
+			};
+
+			expect(rminder.orderFilters[0].checked).to.be.false;
+
+			rminder.settings(data);
+
+			expect(rminder.orderFilters[0].checked).to.be.true;
+		});
+	});
+
+	describe('Rminder.filterUpdate', () => {
+		let db;
+
+		beforeEach(() => {
+			db = {
+				postMessage: td.func()
+			};
+		});
+
+		it('Should postMessage with filter important', () => {
+			rminder.filterUpdate(rminder.orderFilters[0], db);
+
+			td.verify(db.postMessage({ type: 'filter', filter: 'important' }));
+		});
+
+		it('Should postMessage with filter oldest', () => {
+			rminder.filterUpdate(rminder.orderFilters[1], db);
+
+			td.verify(db.postMessage({ type: 'filter', filter: 'oldest' }));
+		});
+
+		it('Should postMessage with filter newest', () => {
+			rminder.filterUpdate(rminder.orderFilters[2], db);
+
+			td.verify(db.postMessage({ type: 'filter', filter: 'newest' }));
 		});
 	});
 
@@ -1049,7 +1098,7 @@ describe('Rminder', () => {
 			rminder.taskList.querySelector('.completed-ckeck').click();
 
 			td.verify(rminder.handleEvent('completedTask', db, 1));
-			td.verify(rminder.hideDetails(), {times: 0});
+			td.verify(rminder.hideDetails(), { times: 0 });
 		});
 
 		it('Should call handleEvent with completedTask and hideDetails', () => {
@@ -1077,12 +1126,36 @@ describe('Rminder', () => {
 			td.verify(rminder.hideDetails());
 		});
 
-		it('Should call settingsCompleted on toggle-completed click', () => {
+		it('Should call toggle of filter button', () => {
+			td.replace(rminder, 'toggle');
+
+			rminder.filterBtn.click();
+
+			td.verify(rminder.toggle(rminder.filterBtn));
+		});
+
+		it('Should call toggle of settings button', () => {
+			td.replace(rminder, 'toggle');
+
+			rminder.settingsBtn.click();
+
+			td.verify(rminder.toggle(rminder.settingsBtn));
+		});
+
+		it('Should call settingsCompleted of toggleCompleted button', () => {
 			td.replace(rminder, 'settingsCompleted');
 
 			rminder.toggleCompleted.click();
 
 			td.verify(rminder.settingsCompleted(rminder.toggleCompleted, db));
+		});
+
+		it('Should call filterUpdate on change of order filter', () => {
+			td.replace(rminder, 'filterUpdate');
+
+			rminder.orderFilters[0].click();
+
+			td.verify(rminder.filterUpdate(rminder.orderFilters[0], db));
 		});
 	});
 });

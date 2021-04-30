@@ -2,7 +2,7 @@ const rminder = {
 	name: 'rminder',
 	version: 2, // Use a long long for this value (don't use a float)
 	storeNames: ['tasks', 'settings'],
-	settings: { completed: 'show', list: 'tasks' }
+	settings: { completed: 'show', list: 'tasks', filter: 'oldest' }
 };
 
 const titles = {
@@ -49,6 +49,7 @@ function openDb() {
 
 			settings.createIndex('completed', 'completed', { unique: false });
 			settings.createIndex('list', 'list', { unique: false });
+			settings.createIndex('filter', 'filter', { unique: false });
 		}
 
 		useDB();
@@ -171,17 +172,18 @@ function displayTasks(store, list, settings = rminder.settings) {
 
 	store.getAll().onsuccess = (e) => {
 		const result = settings?.completed === 'hide' ? e.target.result.filter(task => !task.completed) : e.target.result;
-		let filteredList = result;
+		const sortedResult = sortTasks(result, settings?.filter);
+		let filteredList = sortedResult;
 		if (list !== 'tasks') {
 			filteredList = filteredList.filter(task => task[list]);
-			postMessage({ type: 'tasks', value: result, list: { title: titles[list], name: list, value: filteredList } });
+			postMessage({ type: 'tasks', value: sortedResult, list: { title: titles[list], name: list, value: filteredList } });
 		} else {
-			postMessage({ type: 'tasks', value: result });
+			postMessage({ type: 'tasks', value: sortedResult });
 		}
 	};
 }
 
-function updateSettings(completed, list) {
+function updateSettings(completed, list, filter) {
 	const cmpl = completed ? 'hide' : 'show';
 	const settings = getObjectStore(rminder.storeNames[1], 'readwrite');
 
@@ -194,7 +196,13 @@ function updateSettings(completed, list) {
 				updateSettings.completed = cmpl;
 			}
 
-			updateSettings.list = list;
+			if (list !== undefined) {
+				updateSettings.list = list;
+			}
+
+			if (filter !== undefined) {
+				updateSettings.filter = filter;
+			}
 
 			rminder.settings = updateSettings;
 
@@ -235,6 +243,27 @@ function setDefaultSettings() {
 	req.onerror = () => {
 		postMessage({ type: 'failure', message: `Set default settings: error -> ${req.error}` });
 	};
+}
+
+function sortTasks(tasks, filter) {
+	if (!filter) {
+		return tasks;
+	}
+
+	let tsk;
+
+	switch (filter) {
+		case 'important':
+			tsk = tasks.sort((x, y) => (x.important === y.important) ? 0 : x.important ? -1 : 1); // return important tasks first, for important tasks last (x.important === y.important) ? 0 : x.important ? 1 : -1
+			break;
+		case 'newest':
+			tsk = tasks.sort((x, y) => y.creation_date - x.creation_date); // return newest tasks first 
+			break;
+		default:
+			tsk = tasks;
+			break;
+	}
+	return tsk;
 }
 
 onmessage = (e) => {
@@ -282,6 +311,9 @@ onmessage = (e) => {
 			break;
 		case 'list':
 			updateSettings(undefined, e.data.list);
+			break;
+		case 'filter':
+			updateSettings(undefined, undefined, e.data.filter);
 			break;
 		case 'display':
 			displayTasks(undefined, e.data.list);
