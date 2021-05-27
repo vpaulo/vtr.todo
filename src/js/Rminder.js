@@ -34,6 +34,9 @@ export class Rminder {
 		this.settingsBtn = document.querySelector('.app__settings');
 		this.filterBtn = document.querySelector('.list-filter');
 		[...this.orderFilters] = document.querySelectorAll('.order-filter');
+		this.modal = document.querySelector('.modal');
+		this.modalCancel = this.modal?.querySelector('.default');
+		this.modalDelete = this.modal?.querySelector('.warning');
 	}
 
 	launch(data) {
@@ -155,6 +158,14 @@ export class Rminder {
 		}, false);
 
 		this.remove.addEventListener('click', () => {
+			this.modal.classList.add('open');
+		}, false);
+
+		this.modalCancel.addEventListener('click', () => {
+			this.modal.classList.remove('open');
+		}, false);
+
+		this.modalDelete.addEventListener('click', () => {
 			this.handleEvent('removeTask', db);
 		}, false);
 
@@ -222,6 +233,7 @@ export class Rminder {
 	hideDetails() {
 		this.detailsContainer.classList.remove('expanded');
 		this.taskList.querySelector('.selected')?.classList?.remove('selected');
+		this.modal.classList.remove('open');
 		this.screenTest();
 	}
 

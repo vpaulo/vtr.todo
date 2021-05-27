@@ -105,6 +105,15 @@ describe('Rminder', () => {
 				</div>
 			</aside>
 		</main>
+		<div class="modal">
+			<div class="modal__content">
+				<span>Task will be permanent deleted, you won't be able to undo this action.</span>
+				<div class="modal__actions">
+					<button class="default">Cancel</button>
+					<button class="warning">Delete task</button>
+				</div>
+			</div>
+		</div>
 		`;
 
 		rminder = new Rminder();
@@ -522,10 +531,12 @@ describe('Rminder', () => {
 			td.replace(rminder, 'screenTest');
 
 			rminder.detailsContainer.classList.add('expanded');
+			rminder.modal.classList.add('open');
 
 			rminder.hideDetails();
 
 			expect(rminder.detailsContainer.classList.contains('expanded')).to.be.false;
+			expect(rminder.modal.classList.contains('open')).to.be.false;
 			td.verify(rminder.screenTest());
 		});
 	});
@@ -918,9 +929,23 @@ describe('Rminder', () => {
 		it('Should call handleEvent for removeTask', () => {
 			td.replace(rminder, 'handleEvent');
 
-			rminder.remove.click();
+			rminder.modalDelete.click();
 
 			td.verify(rminder.handleEvent('removeTask', db));
+		});
+
+		it('Should add open class to modal', () => {
+			rminder.remove.click();
+
+			expect(rminder.modal.classList.contains('open')).to.be.true;
+		});
+
+		it('Should remove open class to modal', () => {
+			rminder.modal.classList.add('open');
+
+			rminder.modalCancel.click();
+
+			expect(rminder.modal.classList.contains('open')).to.be.false;
 		});
 
 		it('Should call handleEvent for completedTask', () => {
