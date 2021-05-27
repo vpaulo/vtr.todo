@@ -49,6 +49,7 @@ $white: #fff;
 	--main-width: 100%;
 	--details-width: 0;
 	--lists-visibility: none;
+	--modal-width: 400px;
 
 	--base-color: #414141;
 	--base-grey: #ededed;
@@ -614,7 +615,7 @@ header {
 }
 
 .modal__content {
-	width: 400px;
+	width: var(--modal-width);
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -672,5 +673,9 @@ header {
 
 	.details.expanded {
 		--details-width: calc(100% - var(--size-40) - var(--gap-20));
+	}
+
+	.modal {
+		--modal-width: 320px;
 	}
 }
