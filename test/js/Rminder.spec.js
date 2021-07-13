@@ -7,8 +7,6 @@ describe('Rminder', () => {
 		window.location.hash = 'debug';
 
 		document.body.innerHTML = `
-		<template id="check-square"><span>check</span></template>
-		<template id="star"><span>star</span></template>
 		<header>
 			<div class="header__start">
 				<span class="app__logo"></span>
@@ -87,7 +85,7 @@ describe('Rminder', () => {
 					<div class="detail__title">
 						<span class="completed-ckeck" title="Set it as complete"></span>
 						<input class="title" type="text" value="" />
-						<button class="rename">Rename</button>
+						<vp-button class="rename">Rename</vp-button>
 					</div>
 					<div class="detail__my-day">
 						<span class="my-day" title="Add to my day"></span>
@@ -95,7 +93,7 @@ describe('Rminder', () => {
 					</div>
 					<div class="detail__note">
 						<textarea class="note" cols="30" rows="5" placeholder="Add notes"></textarea>
-						<button class="add-note">Add</button>
+						<vp-button class="add-note">Add</vp-button>
 					</div>
 				</div>
 				<div class="details__footer">
@@ -201,7 +199,7 @@ describe('Rminder', () => {
 
 			rminder.tasks(data);
 
-			expect(rminder.taskList.innerHTML).equals('<li class="" data-id="1"><span class="completed-ckeck" title="Set it as complete"><span>check</span></span><button class="show-details">test</button><span class="importance-check" title="Set it as important"><span>star</span></span></li>');
+			expect(rminder.taskList.innerHTML).equals('<li class="" data-id="1"><span class="completed-ckeck" title="Set it as complete"><vp-icon icon="icons:square"></vp-icon></span><button class="show-details">test</button><span class="importance-check" title="Set it as important"><vp-icon icon="icons:star"></vp-icon></span></li>');
 			expect(rminder.countMyDay.innerText).equals('0');
 			expect(rminder.countImportant.innerText).equals('0');
 			expect(rminder.countTasks.innerText).equals('1');
@@ -228,7 +226,7 @@ describe('Rminder', () => {
 
 			rminder.tasks(data);
 
-			expect(rminder.taskList.innerHTML).equals('<li class="completed " data-id="1"><span class="completed-ckeck" title="Set it as complete"><span>check</span></span><button class="show-details">test</button><span class="importance-check" title="Set it as important"><span>star</span></span></li>');
+			expect(rminder.taskList.innerHTML).equals('<li class="completed " data-id="1"><span class="completed-ckeck" title="Set it as complete"><vp-icon icon="icons:check-square"></vp-icon></span><button class="show-details">test</button><span class="importance-check" title="Set it as important"><vp-icon icon="icons:star"></vp-icon></span></li>');
 
 			td.verify(rminder.setDetailClasses(data.value));
 		});
@@ -250,7 +248,7 @@ describe('Rminder', () => {
 
 			rminder.tasks(data);
 
-			expect(rminder.taskList.innerHTML).equals('<li class="important " data-id="1"><span class="completed-ckeck" title="Set it as complete"><span>check</span></span><button class="show-details">test</button><span class="importance-check" title="Set it as important"><span>star</span></span></li>');
+			expect(rminder.taskList.innerHTML).equals('<li class="important " data-id="1"><span class="completed-ckeck" title="Set it as complete"><vp-icon icon="icons:square"></vp-icon></span><button class="show-details">test</button><span class="importance-check" title="Set it as important"><vp-icon icon="icons:star-solid"></vp-icon></span></li>');
 			expect(rminder.countImportant.innerText).equals('1');
 
 			td.verify(rminder.setDetailClasses(data.value));
@@ -273,7 +271,7 @@ describe('Rminder', () => {
 
 			rminder.tasks(data);
 
-			expect(rminder.taskList.innerHTML).equals('<li class="completed important " data-id="1"><span class="completed-ckeck" title="Set it as complete"><span>check</span></span><button class="show-details">test</button><span class="importance-check" title="Set it as important"><span>star</span></span></li>');
+			expect(rminder.taskList.innerHTML).equals('<li class="completed important " data-id="1"><span class="completed-ckeck" title="Set it as complete"><vp-icon icon="icons:check-square"></vp-icon></span><button class="show-details">test</button><span class="importance-check" title="Set it as important"><vp-icon icon="icons:star-solid"></vp-icon></span></li>');
 			expect(rminder.countImportant.innerText).equals('1');
 
 			td.verify(rminder.setDetailClasses(data.value));
@@ -309,7 +307,7 @@ describe('Rminder', () => {
 
 			rminder.tasks(data);
 
-			expect(rminder.taskList.innerHTML).equals('<li class="important " data-id="2"><span class="completed-ckeck" title="Set it as complete"><span>check</span></span><button class="show-details">test2</button><span class="importance-check" title="Set it as important"><span>star</span></span></li>');
+			expect(rminder.taskList.innerHTML).equals('<li class="important " data-id="2"><span class="completed-ckeck" title="Set it as complete"><vp-icon icon="icons:square"></vp-icon></span><button class="show-details">test2</button><span class="importance-check" title="Set it as important"><vp-icon icon="icons:star-solid"></vp-icon></span></li>');
 			expect(rminder.listTitle.innerText).equals('Important');
 			expect(rminder.mainContainer.dataset.list).equals('important');
 
@@ -972,7 +970,12 @@ describe('Rminder', () => {
 		it('Should call setTaskNote', () => {
 			td.replace(rminder, 'setTaskNote');
 
-			rminder.noteBtn.click();
+			rminder.noteBtn.dispatchEvent(
+				new CustomEvent('vp-button:click', {
+					detail: {},
+					bubbles: true,
+				})
+			);
 
 			td.verify(rminder.setTaskNote(db));
 		});
@@ -980,7 +983,12 @@ describe('Rminder', () => {
 		it('Should call renameTask', () => {
 			td.replace(rminder, 'renameTask');
 
-			rminder.rename.click();
+			rminder.rename.dispatchEvent(
+				new CustomEvent('vp-button:click', {
+					detail: {},
+					bubbles: true,
+				})
+			);
 
 			td.verify(rminder.renameTask(db));
 		});

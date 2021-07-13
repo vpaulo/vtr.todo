@@ -24,8 +24,6 @@ export class Rminder {
 		this.countTasks = document.querySelector('.count-tasks');
 		this.menuBtn = document.querySelector('.menu');
 		this.sidebar = document.querySelector('.sidebar');
-		this.checkSquareTmp = document.getElementById('check-square');
-		this.starTmp = document.getElementById('star');
 		this.lists = document.querySelector('.lists');
 		this.listTitle = document.querySelector('.list-title');
 		this.mainContainer = document.querySelector('.main');
@@ -72,7 +70,7 @@ export class Rminder {
 		}
 
 		// Show tasks
-		this.taskList.innerHTML = dt.map(task => `<li class="${task.completed ? 'completed ' : ''}${task.important ? 'important ' : ''}" data-id="${task.id}"><span class="completed-ckeck" title="Set it as complete">${this.checkSquareTmp.innerHTML}</span><button class="show-details">${task.title}</button><span class="importance-check" title="Set it as important">${this.starTmp.innerHTML}</span>`).join('');
+		this.taskList.innerHTML = dt.map(task => `<li class="${task.completed ? 'completed ' : ''}${task.important ? 'important ' : ''}" data-id="${task.id}"><span class="completed-ckeck" title="Set it as complete"><vp-icon icon="icons:${task.completed ? 'check-square' : 'square'}"></vp-icon></span><button class="show-details">${task.title}</button><span class="importance-check" title="Set it as important"><vp-icon icon="icons:${task.important ? 'star-solid' : 'star'}"></vp-icon></span>`).join('');
 		// Show counters
 		this.countMyDay.innerText = data.filter(d => d.my_day).length;
 		this.countImportant.innerText = data.filter(d => d.important).length;
@@ -153,9 +151,8 @@ export class Rminder {
 			}
 		}, false);
 
-		this.rename.addEventListener('click', () => {
-			this.renameTask(db);
-		}, false);
+		this.rename.addEventListener('vp-button:click', () => {	this.renameTask(db); });
+		this.noteBtn.addEventListener('vp-button:click', () => { this.setTaskNote(db); });
 
 		this.remove.addEventListener('click', () => {
 			this.modal.classList.add('open');
@@ -180,8 +177,6 @@ export class Rminder {
 		this.myDay.addEventListener('click', () => {
 			this.handleEvent('myDayTask', db);
 		}, false);
-
-		this.noteBtn.addEventListener('click', () => { this.setTaskNote(db); }, false);
 
 		this.mediaQueryList.addEventListener('change', this.screenTest.bind(this), false);
 
@@ -283,6 +278,10 @@ export class Rminder {
 
 		this.detailsContainer.classList.remove('important', 'completed', 'today');
 
+		this.importanceCheckBtn?.querySelector('vp-icon')?.setAttribute('icon', `icons:star${ dt?.important ? '-solid' : ''}`);
+		this.completedCheck?.querySelector('vp-icon')?.setAttribute('icon', `icons:${ dt?.completed ? 'check-' : ''}square`);
+
+		// TODO: remove this classes 
 		if (dt?.important) {
 			this.detailsContainer.classList.add('important');
 		}

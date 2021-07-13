@@ -190,7 +190,7 @@ header {
 	list-style: none;
 }
 
-.list.selected > svg {
+.list.selected > vp-icon {
 	color: var(--primary);
 }
 
@@ -254,7 +254,7 @@ header {
 	flex: 0 0 24px;
 	cursor: pointer;
 	text-align: center;
-	line-height: 28px;
+	line-height: 24px;
 
 	&:hover .add-icon {
 		color: var(--primary);
@@ -290,6 +290,7 @@ header {
 .completed-ckeck,
 .importance-check,
 .my-day {
+	display: inline-flex;
 	width: 20px;
 	height: 20px;
 	flex: 0 0 auto;
@@ -423,25 +424,6 @@ header {
 	gap: 10px;
 }
 
-.rename,
-.add-note {
-	background-color: transparent;
-	border: 1px solid transparent;
-	font-size: 0.8rem;
-	color: var(--primary);
-	font-weight: 600;
-	padding: 0;
-	cursor: pointer;
-
-	&:hover {
-		border-bottom-color: var(--primary);
-	}
-
-	&:focus {
-		outline: none;
-	}
-}
-
 .remove,
 .close {
 	background: transparent;
@@ -459,7 +441,7 @@ header {
 .remove {
 	border-left: 1px solid var(--base-grey);
 
-	&:hover .trash-icon {
+	&:hover vp-icon {
 		color: var(--base-red);
 	}
 }
@@ -467,7 +449,7 @@ header {
 .close {
 	border-right: 1px solid var(--base-grey);
 
-	&:hover .close-icon {
+	&:hover vp-icon {
 		color: var(--primary);
 	}
 }
@@ -480,6 +462,7 @@ header {
 }
 
 .menu {
+	display: inline-flex;
 	width: 20px;
 	height: 20px;
 	cursor: pointer;
@@ -498,7 +481,7 @@ header {
 }
 
 .list-filter {
-	display: inline-block;
+	display: inline-flex;
 	position: relative;
 	width: 20px;
 	height: 20px;
