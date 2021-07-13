@@ -423,24 +423,24 @@ header {
 	gap: 10px;
 }
 
-.rename,
-.add-note {
-	background-color: transparent;
-	border: 1px solid transparent;
-	font-size: 0.8rem;
-	color: var(--primary);
-	font-weight: 600;
-	padding: 0;
-	cursor: pointer;
+// .rename,
+// .add-note {
+// 	background-color: transparent;
+// 	border: 1px solid transparent;
+// 	font-size: 0.8rem;
+// 	color: var(--primary);
+// 	font-weight: 600;
+// 	padding: 0;
+// 	cursor: pointer;
 
-	&:hover {
-		border-bottom-color: var(--primary);
-	}
+// 	&:hover {
+// 		border-bottom-color: var(--primary);
+// 	}
 
-	&:focus {
-		outline: none;
-	}
-}
+// 	&:focus {
+// 		outline: none;
+// 	}
+// }
 
 .remove,
 .close {

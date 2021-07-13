@@ -87,7 +87,7 @@ describe('Rminder', () => {
 					<div class="detail__title">
 						<span class="completed-ckeck" title="Set it as complete"></span>
 						<input class="title" type="text" value="" />
-						<button class="rename">Rename</button>
+						<vp-button class="rename">Rename</vp-button>
 					</div>
 					<div class="detail__my-day">
 						<span class="my-day" title="Add to my day"></span>
@@ -95,7 +95,7 @@ describe('Rminder', () => {
 					</div>
 					<div class="detail__note">
 						<textarea class="note" cols="30" rows="5" placeholder="Add notes"></textarea>
-						<button class="add-note">Add</button>
+						<vp-button class="add-note">Add</vp-button>
 					</div>
 				</div>
 				<div class="details__footer">
@@ -972,7 +972,12 @@ describe('Rminder', () => {
 		it('Should call setTaskNote', () => {
 			td.replace(rminder, 'setTaskNote');
 
-			rminder.noteBtn.click();
+			rminder.noteBtn.dispatchEvent(
+				new CustomEvent('vp-button:click', {
+					detail: {},
+					bubbles: true,
+				})
+			);
 
 			td.verify(rminder.setTaskNote(db));
 		});
@@ -980,7 +985,12 @@ describe('Rminder', () => {
 		it('Should call renameTask', () => {
 			td.replace(rminder, 'renameTask');
 
-			rminder.rename.click();
+			rminder.rename.dispatchEvent(
+				new CustomEvent('vp-button:click', {
+					detail: {},
+					bubbles: true,
+				})
+			);
 
 			td.verify(rminder.renameTask(db));
 		});

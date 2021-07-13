@@ -153,9 +153,8 @@ export class Rminder {
 			}
 		}, false);
 
-		this.rename.addEventListener('click', () => {
-			this.renameTask(db);
-		}, false);
+		this.rename.addEventListener('vp-button:click', () => {	this.renameTask(db); });
+		this.noteBtn.addEventListener('vp-button:click', () => { this.setTaskNote(db); });
 
 		this.remove.addEventListener('click', () => {
 			this.modal.classList.add('open');
@@ -180,8 +179,6 @@ export class Rminder {
 		this.myDay.addEventListener('click', () => {
 			this.handleEvent('myDayTask', db);
 		}, false);
-
-		this.noteBtn.addEventListener('click', () => { this.setTaskNote(db); }, false);
 
 		this.mediaQueryList.addEventListener('change', this.screenTest.bind(this), false);
 
